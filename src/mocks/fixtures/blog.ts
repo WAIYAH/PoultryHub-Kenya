@@ -2,13 +2,15 @@
 // every article before launch. Bodies are Markdown (rendered without raw HTML).
 import type { BlogPost } from "@/types/domain";
 
+import { photo } from "./images";
+
 export const blogPosts: BlogPost[] = [
   {
     slug: "brooder-checklist-day-old-chicks",
     title: "Preparing for day-old chicks: a brooder checklist",
     excerpt:
       "Get the brooder warm, dry and ready before your chicks arrive. A simple checklist for the first two weeks.",
-    coverImage: null,
+    coverImage: photo("baby-chicks", "wide", "Day-old chicks huddled together on wood shavings"),
     tags: ["chicks", "brooding"],
     publishedAt: "2026-09-28T06:00:00Z",
     readingMinutes: 4,
@@ -49,7 +51,7 @@ Ready to start? [See our day-old chicks](/shop/day-old-chicks) and [feeders and 
     slug: "how-to-store-eggs-at-home",
     title: "How to store eggs at home",
     excerpt: "Simple habits that keep eggs fresh for longer, whether you buy one tray or ten.",
-    coverImage: null,
+    coverImage: photo("kenya-eggs-tray", "wide", "Brown eggs packed in trays"),
     tags: ["eggs", "kitchen"],
     publishedAt: "2026-09-12T06:00:00Z",
     readingMinutes: 3,
@@ -83,7 +85,7 @@ Hotels, restaurants and shops can order [eggs in bulk](/products/eggs-for-busine
     title: "Kienyeji or broilers: which suits your farm?",
     excerpt:
       "Both can be profitable. The right choice depends on your market, your time and your budget.",
-    coverImage: null,
+    coverImage: photo("broilers-feeder", "wide", "White broilers around a feeder and drinker"),
     tags: ["live birds", "planning"],
     publishedAt: "2026-08-30T06:00:00Z",
     readingMinutes: 5,
@@ -118,7 +120,7 @@ Start small, keep records of feed and sales, and grow once you know your market.
     slug: "feeding-layers",
     title: "Feeding layers for steady egg production",
     excerpt: "Hens lay best on a consistent routine. What to feed, and the mistakes to avoid.",
-    coverImage: null,
+    coverImage: photo("hens-feeder", "wide", "Hens feeding from a hanging feeder"),
     tags: ["layers", "feeds"],
     publishedAt: "2026-08-14T06:00:00Z",
     readingMinutes: 4,
@@ -152,7 +154,7 @@ Find [layers mash](/products/layers-mash) and [feeders](/products/hanging-feeder
     slug: "first-month-with-pullets",
     title: "Your first month with point-of-lay pullets",
     excerpt: "Settle new pullets in calmly and they'll start laying sooner. A week-by-week guide.",
-    coverImage: null,
+    coverImage: photo("hens-farm", "wide", "Brown hens standing close together"),
     tags: ["pullets", "layers"],
     publishedAt: "2026-07-25T06:00:00Z",
     readingMinutes: 3,

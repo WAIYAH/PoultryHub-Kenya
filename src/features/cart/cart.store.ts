@@ -28,6 +28,12 @@ interface CartState {
   addItem: (input: { variantId: string; quantity: number; snapshot: CartLineSnapshot }) => void;
   setQuantity: (variantId: string, quantity: number) => void;
   removeItem: (variantId: string) => void;
+  /** Records the latest server details for a line, e.g. after the customer accepts a new price. */
+  updateSnapshot: (variantId: string, snapshot: Partial<CartLineSnapshot>) => void;
+  /** Replaces the cart, e.g. "Order again" (CART-08). */
+  replaceAll: (
+    lines: { variantId: string; quantity: number; snapshot: CartLineSnapshot }[],
+  ) => void;
   clear: () => void;
 }
 
@@ -78,6 +84,19 @@ export const useCartStore = create<CartState>()(
       },
       removeItem: (variantId) =>
         set((state) => ({ lines: state.lines.filter((l) => l.variantId !== variantId) })),
+      updateSnapshot: (variantId, snapshot) =>
+        set((state) => ({
+          lines: state.lines.map((line) =>
+            line.variantId === variantId
+              ? { ...line, snapshot: { ...line.snapshot, ...snapshot } }
+              : line,
+          ),
+        })),
+      replaceAll: (lines) => {
+        for (const line of lines) assertQuantity(line.quantity);
+        const addedAt = new Date().toISOString();
+        set({ lines: lines.filter((l) => l.quantity > 0).map((l) => ({ ...l, addedAt })) });
+      },
       clear: () => set({ lines: [] }),
     }),
     {

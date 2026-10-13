@@ -4,6 +4,7 @@
 import type { Category, ProductDetail, ProductImage, ProductVariant } from "@/types/domain";
 
 import { daysFromNow } from "./dates";
+import { photo } from "./images";
 
 export type FixtureCategory = Omit<Category, "productCount" | "fromPriceMinor">;
 
@@ -55,7 +56,7 @@ export const categories: FixtureCategory[] = [
     name: "Eggs",
     description:
       "Table eggs and kienyeji eggs, sold by the tray of 30. Businesses can order in bulk or set up a regular supply.",
-    image: null,
+    image: photo("kenya-eggs-tray", "landscape", "Brown eggs in trays of 30"),
   },
   {
     id: "cat-chicks",
@@ -63,7 +64,7 @@ export const categories: FixtureCategory[] = [
     name: "Day-old chicks",
     description:
       "Layer, broiler and improved kienyeji chicks from scheduled batches, with minimum orders. Collect them at the farm on the batch date.",
-    image: null,
+    image: photo("baby-chicks", "landscape", "Day-old chicks huddled together on wood shavings"),
   },
   {
     id: "cat-live-birds",
@@ -71,7 +72,7 @@ export const categories: FixtureCategory[] = [
     name: "Live birds",
     description:
       "Broilers priced per bird by weight band, kienyeji cockerels, point-of-lay pullets and spent hens.",
-    image: null,
+    image: photo("flock", "landscape", "A flock of brown and white chickens on a small farm"),
   },
   {
     id: "cat-feeds",
@@ -79,7 +80,7 @@ export const categories: FixtureCategory[] = [
     name: "Feeds & supplies",
     description:
       "Feeds for every stage, feeders, drinkers, egg trays and dried manure for your garden.",
-    image: null,
+    image: photo("hens-feeder", "landscape", "Hens feeding from a galvanised hanging feeder"),
   },
 ];
 
@@ -97,7 +98,7 @@ export const products: FixtureProduct[] = [
     isFeatured: true,
     collectionOnly: false,
     publishedAt: "2026-07-01T06:00:00Z",
-    images: noImages,
+    images: [photo("kenya-eggs-tray", "square", "Brown eggs packed in a tray of 30")],
     searchKeywords: ["mayai", "egg", "tray", "trei", "brown eggs"],
     specifications: [
       { label: "Pack", value: "Tray of 30 eggs" },
@@ -142,7 +143,7 @@ export const products: FixtureProduct[] = [
     isFeatured: true,
     collectionOnly: false,
     publishedAt: "2026-07-04T06:00:00Z",
-    images: noImages,
+    images: [photo("kenya-eggs-hand", "square", "Three pale kienyeji eggs held in a hand")],
     searchKeywords: ["mayai ya kienyeji", "kienyeji", "indigenous", "mayai"],
     specifications: [
       { label: "Pack", value: "Tray of 30 or half tray of 15" },
@@ -186,7 +187,7 @@ export const products: FixtureProduct[] = [
     isFeatured: false,
     collectionOnly: false,
     publishedAt: "2026-08-02T06:00:00Z",
-    images: noImages,
+    images: [photo("kenya-eggs-tray", "square", "Brown eggs packed in a tray of 30")],
     searchKeywords: ["wholesale", "bulk", "jumla", "hotel", "mayai", "restaurant"],
     specifications: [
       { label: "Pack", value: "Trays of 30 large eggs" },
@@ -251,7 +252,10 @@ export const products: FixtureProduct[] = [
     isFeatured: true,
     collectionOnly: true,
     publishedAt: "2026-07-10T06:00:00Z",
-    images: noImages,
+    images: [
+      photo("kenya-hen-chicks", "square", "A kienyeji hen with her young chicks in a grassy yard"),
+      photo("baby-chicks", "square", "Day-old chicks huddled together on wood shavings"),
+    ],
     searchKeywords: ["vifaranga", "kienyeji", "chicks", "day old", "kifaranga"],
     specifications: [
       { label: "Age", value: "Day-old" },
@@ -286,7 +290,7 @@ export const products: FixtureProduct[] = [
     isFeatured: false,
     collectionOnly: true,
     publishedAt: "2026-09-15T06:00:00Z",
-    images: noImages,
+    images: [photo("baby-chicks", "square", "Day-old chicks huddled together on wood shavings")],
     searchKeywords: ["vifaranga vya nyama", "broiler", "chicks", "kuku wa nyama"],
     specifications: [
       { label: "Age", value: "Day-old" },
@@ -318,10 +322,10 @@ export const products: FixtureProduct[] = [
     description:
       "SAMPLE PRODUCT. Layer chicks for egg production. They usually start laying at about 18 to 20 weeks with good feeding and care.",
     purchaseMode: "cart",
-    isFeatured: false,
+    isFeatured: true,
     collectionOnly: true,
     publishedAt: "2026-08-20T06:00:00Z",
-    images: noImages,
+    images: [photo("chicks-crate", "square", "Young brown chicks in a red plastic crate")],
     searchKeywords: ["vifaranga", "layers", "kuku wa mayai", "chicks"],
     specifications: [
       { label: "Age", value: "Day-old" },
@@ -357,7 +361,9 @@ export const products: FixtureProduct[] = [
     isFeatured: true,
     collectionOnly: false,
     publishedAt: "2026-07-15T06:00:00Z",
-    images: noImages,
+    images: [
+      photo("broilers-feeder", "square", "White broilers in a house with a feeder and a drinker"),
+    ],
     searchKeywords: ["kuku wa nyama", "broiler", "kuku", "chicken", "meat"],
     specifications: [
       { label: "Sold as", value: "Per bird, by live-weight band" },
@@ -403,10 +409,10 @@ export const products: FixtureProduct[] = [
     description:
       "SAMPLE PRODUCT. Mature improved kienyeji cockerels, popular for family occasions. Sold per bird.",
     purchaseMode: "cart",
-    isFeatured: false,
+    isFeatured: true,
     collectionOnly: false,
     publishedAt: "2026-08-10T06:00:00Z",
-    images: noImages,
+    images: [photo("rooster", "square", "A red and black cockerel standing on a path")],
     searchKeywords: ["jogoo", "kienyeji", "kuku wa kienyeji", "cockerel", "rooster"],
     specifications: [{ label: "Live weight", value: "About 2.5–3 kg" }],
     variants: [
@@ -434,7 +440,10 @@ export const products: FixtureProduct[] = [
     isFeatured: true,
     collectionOnly: false,
     publishedAt: "2026-09-01T06:00:00Z",
-    images: noImages,
+    images: [
+      photo("hens-farm", "square", "Brown hens standing close together"),
+      photo("hens-pasture", "square", "A brown hen on dry grass"),
+    ],
     searchKeywords: ["pullets", "pol", "kuku wa mayai", "layers", "hens"],
     specifications: [
       { label: "Age", value: "About 18 weeks" },
@@ -468,7 +477,7 @@ export const products: FixtureProduct[] = [
     isFeatured: false,
     collectionOnly: false,
     publishedAt: "2026-07-20T06:00:00Z",
-    images: noImages,
+    images: [photo("hens-pasture", "square", "A brown hen on dry grass")],
     searchKeywords: ["kuku", "hens", "layers", "spent hens"],
     specifications: [{ label: "Minimum order", value: "5 birds" }],
     variants: [
@@ -711,10 +720,10 @@ export const products: FixtureProduct[] = [
     description:
       "SAMPLE PRODUCT. A hanging tube feeder that reduces feed waste. Adjust the height as your birds grow.",
     purchaseMode: "cart",
-    isFeatured: false,
+    isFeatured: true,
     collectionOnly: false,
     publishedAt: "2026-09-25T06:00:00Z",
-    images: noImages,
+    images: [photo("hens-feeder", "square", "Hens around a galvanised hanging feeder")],
     searchKeywords: ["feeder", "equipment", "vifaa"],
     specifications: [
       { label: "Capacity", value: "About 10 kg of feed" },

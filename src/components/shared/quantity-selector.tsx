@@ -37,6 +37,8 @@ export function QuantitySelector({
   rule,
   unit,
   label,
+  labelHidden = false,
+  compact = false,
   disabled = false,
   className,
 }: {
@@ -45,6 +47,10 @@ export function QuantitySelector({
   rule: QuantityRule;
   unit: SaleUnit;
   label?: string;
+  /** Keep the label for screen readers only (e.g. cart lines, where the row names the item). */
+  labelHidden?: boolean;
+  /** Narrower input; the rule hint appears only when a limit is hit (cart lines). */
+  compact?: boolean;
   disabled?: boolean;
   className?: string;
 }) {
@@ -55,7 +61,7 @@ export function QuantitySelector({
 
   const decrement = stepQuantity(value, rule, -1);
   const increment = stepQuantity(value, rule, 1);
-  const hint = message ?? describeQuantityRule(rule, unit);
+  const hint = message ?? (compact ? null : describeQuantityRule(rule, unit));
 
   function commit(raw: string) {
     setDraft(null);
@@ -81,7 +87,10 @@ export function QuantitySelector({
 
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
-      <label htmlFor={inputId} className="text-sm font-medium text-ink-900">
+      <label
+        htmlFor={inputId}
+        className={cn("text-sm font-medium text-ink-900", labelHidden && "sr-only")}
+      >
         {label ?? `Quantity (${unitLabel(unit, 2)})`}
       </label>
       <div className="inline-flex w-fit items-center rounded-full border border-ink-400 bg-white [box-shadow:inset_0_1px_0_rgb(255_255_255/0.6),var(--shadow-xs)] focus-within:border-ring">
@@ -108,7 +117,10 @@ export function QuantitySelector({
           onKeyDown={(event) => {
             if (event.key === "Enter") commit(event.currentTarget.value);
           }}
-          className="h-11 w-16 bg-transparent text-center text-base font-semibold text-ink-900 tabular-nums outline-none"
+          className={cn(
+            "h-11 bg-transparent text-center text-base font-semibold text-ink-900 tabular-nums outline-none",
+            compact ? "w-12" : "w-16",
+          )}
         />
         <button
           type="button"
@@ -124,7 +136,11 @@ export function QuantitySelector({
       <p
         id={hintId}
         aria-live="polite"
-        className={cn("min-h-5 text-sm", message ? "text-warning-fg" : "text-ink-600")}
+        className={cn(
+          "text-sm",
+          !compact && "min-h-5",
+          message ? "text-warning-fg" : "text-ink-600",
+        )}
       >
         {hint}
       </p>

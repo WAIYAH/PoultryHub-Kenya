@@ -10,6 +10,8 @@ import type {
   Testimonial,
 } from "@/types/domain";
 
+import { heroPhoto, photo } from "./images";
+
 export const siteSettings: SiteSettings = {
   businessName: "PoultryHub Kenya",
   tagline: "Fresh eggs, chicks and farm supplies",
@@ -47,7 +49,7 @@ export const homeContent: HomeContent = {
     lead: "Order eggs, day-old chicks, live birds and farm supplies online. Pay with M-Pesa or on delivery, or pick up at the farm.",
     primaryCta: { label: "Shop now", href: "/shop" },
     secondaryCta: { label: "Chat on WhatsApp", href: "/contact" },
-    image: null,
+    image: heroPhoto("kenya-hen-chicks", "A hen with her young chicks in a grassy yard"),
   },
   serviceFacts: [
     { icon: "smartphone", title: "Pay with M-Pesa", text: "Or pay on delivery or at pick-up." },
@@ -64,7 +66,7 @@ export const homeContent: HomeContent = {
     title: "A family poultry farm serving homes, farmers and businesses",
     body: "Sample story: we keep layers, broilers and improved kienyeji birds, and sell eggs, chicks and birds directly to the people who use them. Ordering online simply makes it easier to plan, pay and collect.",
     cta: { label: "Our story", href: "/about" },
-    image: null,
+    image: photo("hens-pasture", "landscape", "A brown hen on dry grass on a farm"),
   },
   eggsPromo: {
     eyebrow: "Fresh eggs",
@@ -78,7 +80,7 @@ export const homeContent: HomeContent = {
       { icon: "truck", title: "Delivered or picked up" },
     ],
     cta: { label: "Order eggs", href: "/shop/eggs" },
-    image: null,
+    image: photo("kenya-eggs-hand", "portrait", "Three pale eggs held in a hand"),
   },
   practices: {
     eyebrow: "How we farm",
@@ -91,7 +93,7 @@ export const homeContent: HomeContent = {
       "Biosecurity at the farm gate and in every house",
     ],
     cta: { label: "Read more about us", href: "/about" },
-    image: null,
+    image: photo("broilers-feeder", "landscape", "Young birds with a clean feeder and drinker"),
   },
   howToOrder: {
     eyebrow: "How ordering works",
@@ -122,7 +124,7 @@ export const homeContent: HomeContent = {
       { icon: "handshake", title: "One contact", text: "A named person for your orders." },
     ],
     cta: { label: "Request a quote", href: "/contact?subject=wholesale_quote" },
-    image: null,
+    image: photo("flock", "band", "A flock of chickens on a small farm"),
   },
 };
 
@@ -130,7 +132,7 @@ export const aboutContent: AboutContent = {
   intro: {
     title: "About PoultryHub Kenya",
     lead: "Sample introduction: a Kenyan poultry farm selling eggs, chicks, birds and supplies directly to households, farmers and businesses.",
-    image: null,
+    image: photo("kenya-hen-chicks", "landscape", "A hen with her young chicks in a grassy yard"),
   },
   story: {
     title: "Our story",

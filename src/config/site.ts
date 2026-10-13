@@ -1,5 +1,5 @@
-// Brand and navigation config. Business facts that the business hasn't supplied yet are `null`
-// on purpose: components hide what isn't configured instead of inventing it (REQUIREMENTS.md BR-31).
+// Brand and navigation config. Business facts (phone, WhatsApp, hours…) live in site settings
+// (`ContentService.getSettings`), not here, and stay null until the business supplies them.
 
 export const site = {
   /** Working trading name (PLAN.md decision D2); confirm before launch. */
@@ -10,26 +10,12 @@ export const site = {
   locale: "en-KE",
   timeZone: "Africa/Nairobi",
   currency: "KES",
+  /** Default link-preview image (1200×630 JPEG). Illustrative until real photos arrive (A-15). */
+  ogImage: {
+    url: "/images/photos/kenya-hen-chicks-og-1200.jpg",
+    alt: "A hen with her young chicks in a grassy yard",
+  },
 } as const;
-
-export interface BusinessContact {
-  /** E.164, e.g. +254712345678 */
-  phone: string | null;
-  /** E.164 number used for wa.me links */
-  whatsapp: string | null;
-  email: string | null;
-  location: string | null;
-  hours: string | null;
-}
-
-/** Replaced by `site_settings` from the database in Phase 3. */
-export const businessContact: BusinessContact = {
-  phone: null,
-  whatsapp: null,
-  email: null,
-  location: null,
-  hours: null,
-};
 
 export interface NavLink {
   label: string;

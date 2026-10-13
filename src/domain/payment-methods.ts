@@ -78,6 +78,19 @@ export function paymentMethodAvailability(
   });
 }
 
+/** "We accept M-Pesa, pay on delivery and pay at pick-up." for the footer (SITE-07), or null. */
+export function acceptedPaymentsSentence(settings: PaymentSettings): string | null {
+  const parts = [
+    settings.mpesaStk || settings.mpesaPaybill ? "M-Pesa" : null,
+    settings.payOnDelivery ? "pay on delivery" : null,
+    settings.payOnCollection ? "pay at pick-up" : null,
+  ].filter((part): part is string => part !== null);
+  if (parts.length === 0) return null;
+  const list =
+    parts.length === 1 ? parts[0] : `${parts.slice(0, -1).join(", ")} and ${parts.at(-1)}`;
+  return `We accept ${list}.`;
+}
+
 export function isPaymentMethodAllowed(
   settings: PaymentSettings,
   method: PaymentMethod,

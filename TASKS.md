@@ -57,10 +57,10 @@
 **Data**
 - [x] **P2-01** Typed fixtures, all marked `SAMPLE`: 4 categories; 20 products across every type (variants, units, MOQ, step, pre-order batches, enquiry-only, pick-up-only, Swahili keywords); 3 zones, 17 areas and 2 pick-up points; settings; content blocks; 12 FAQs; testimonials (empty by default); 5 blog posts; 4 policy templates; 3 promo codes; a demo account with 3 example orders
 - [x] **P2-02** Mock services for all nine contracts, each loaded on first use (`src/services/lazy.ts`) so fixtures stay out of initial bundles. Fixed 250 ms latency; `?mock=slow|empty|error` plus checkout scenarios `price-changed|low-stock|area-closed`; stock-aware quote with promos and zone fees; idempotent order placement with every recovery error; hold expiry; demo M-Pesa state machine; mock auth with email-link codes. Demo writes persist in `localStorage` (`phk-demo-state`). 47 tests named by rule ID
-- [ ] **P2-03** Source illustrative images (licensed, recorded in `public/images/CREDITS.md`) and generate responsive variants of static assets
+- [x] **P2-03** 12 illustrative photos, CC0 or Public Domain Mark only, each licence checked at the source; 3 are from Kenya. No identifiable people, no cages. `pnpm images` (sharp) downloads sources from `scripts/images/manifest.mjs`, writes 480/960 WebP crops, an AVIF art-directed hero and JPEGs for link previews, and generates `public/images/CREDITS.md` and the typed rendition list. Cards ≤ 40 KB at 480 px; desktop hero 62 KB AVIF
 
 **Pages & features**
-- [ ] **P2-04** Home: every section in [DESIGN_SYSTEM §10.1](DESIGN_SYSTEM.md#101-home-page-blueprint)
+- [x] **P2-04** Home: every section in [DESIGN_SYSTEM §10.1](DESIGN_SYSTEM.md#101-home-page-blueprint). Content from the build-time loader; category prices and featured products revalidate in the browser. Testimonials are hidden while none are published (their carousel loads on demand)
 - [ ] **P2-05** Shop and category pages: grid, filters (a sheet on mobile), search, sort, pagination, URL state, removable filter chips
 - [ ] **P2-06** Product details: gallery, variant picker, quantity rules, sticky mobile buy bar, specifications, delivery info, related products, WhatsApp enquiry
 - [ ] **P2-07** Cart: drawer and page, quantity rules, price-change notices, delivery estimate, promo field, "Order again"
@@ -68,7 +68,7 @@
 - [ ] **P2-09** Order page: confirmation, demo M-Pesa panel states, timeline, printable receipt. Track Order page
 - [ ] **P2-10** Auth screens (sign in, sign up, forgot and reset password, callback) on mock auth. Account overview, orders, profile, addresses, security
 - [ ] **P2-11** About, Services, Contact (validated form, mock submit), FAQ, Blog index and post, Search, Policies (templates marked as drafts)
-- [ ] **P2-12** Announcement bar, floating WhatsApp button (hidden on checkout), footer content
+- [x] **P2-12** Announcement bar (in the pre-rendered HTML, so no layout shift), floating WhatsApp button (not in checkout or admin; lifts above sticky bars), footer with hours, payment methods and real social links only. Site settings load in the root loader. Without a configured number, demo builds use WhatsApp's share link and real builds hide WhatsApp
 - [ ] **P2-13** Loading, empty, error, success and offline states on every data view
 - [ ] **P2-14** Motion and micro-interactions per [DESIGN_SYSTEM §12](DESIGN_SYSTEM.md#12-motion-system)
 - [ ] **P2-15** SEO: meta per route, canonical URLs, OG images, JSON-LD (known fields only), sitemap, robots, `noindex` rules

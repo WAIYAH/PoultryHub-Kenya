@@ -7,6 +7,20 @@ export function whatsappUrl(e164: string, message?: string): string {
   return message ? `${base}?text=${encodeURIComponent(message)}` : base;
 }
 
+/**
+ * The link for a configured business number. Until the business supplies one, demo builds fall
+ * back to WhatsApp's share link (the visitor picks a chat), so the buttons can be reviewed without
+ * ever messaging a made-up number; real builds hide WhatsApp entirely (BR-31).
+ */
+export function businessWhatsappUrl(
+  e164: string | null,
+  message: string,
+  allowShareFallback: boolean,
+): string | null {
+  if (e164) return whatsappUrl(e164, message);
+  return allowShareFallback ? `https://wa.me/?text=${encodeURIComponent(message)}` : null;
+}
+
 export const whatsappMessages = {
   general: (businessName: string) => `Hello ${businessName}, I have a question.`,
   productEnquiry: (input: {
@@ -21,4 +35,6 @@ export const whatsappMessages = {
   orderHelp: (orderNumber: string) => `Hello, I need help with order ${orderNumber}.`,
   wholesale: (businessName: string) =>
     `Hello ${businessName}, I'd like a quote for a bulk or regular supply order.`,
+  areaNotListed: (businessName: string, area: string) =>
+    `Hello ${businessName}, do you deliver to ${area}?`,
 };

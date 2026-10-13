@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { whatsappMessages, whatsappUrl } from "./whatsapp";
+import { businessWhatsappUrl, whatsappMessages, whatsappUrl } from "./whatsapp";
 
 describe("whatsappUrl", () => {
   it("strips the plus sign from the number", () => {
@@ -11,6 +11,19 @@ describe("whatsappUrl", () => {
     expect(whatsappUrl("+254712345678", "Order PH001234 & eggs?")).toBe(
       "https://wa.me/254712345678?text=Order%20PH001234%20%26%20eggs%3F",
     );
+  });
+});
+
+describe("businessWhatsappUrl (SITE-04, BR-31)", () => {
+  it("uses the configured business number", () => {
+    expect(businessWhatsappUrl("+254712345678", "Hi", false)).toBe(
+      "https://wa.me/254712345678?text=Hi",
+    );
+  });
+
+  it("falls back to a share link only in demo builds, never to a made-up number", () => {
+    expect(businessWhatsappUrl(null, "Hi there", true)).toBe("https://wa.me/?text=Hi%20there");
+    expect(businessWhatsappUrl(null, "Hi there", false)).toBeNull();
   });
 });
 

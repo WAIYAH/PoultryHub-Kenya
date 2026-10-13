@@ -15,6 +15,15 @@ export type Availability = "in_stock" | "low_stock" | "out_of_stock" | "pre_orde
 
 export type PurchaseMode = "cart" | "enquiry";
 
+/** An extra `<source>` for art direction (different crop per screen size) or a newer format. */
+export interface ImageSource {
+  srcSet: string;
+  type?: string;
+  media?: string;
+  width: number;
+  height: number;
+}
+
 /** A responsive image. `srcSet` lists the 480/960/1600 px renditions when they exist. */
 export interface ImageAsset {
   src: string;
@@ -22,6 +31,10 @@ export interface ImageAsset {
   alt: string;
   width: number;
   height: number;
+  /** Rendered as `<picture>` sources before the `<img>`, e.g. an AVIF hero (DESIGN_SYSTEM.md §8). */
+  sources?: ImageSource[];
+  /** JPEG rendition for link previews and structured data, where WebP isn't reliably supported. */
+  jpegSrc?: string;
 }
 
 export type ProductImage = ImageAsset;

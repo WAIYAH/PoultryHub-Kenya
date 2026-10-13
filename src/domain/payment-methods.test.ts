@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  acceptedPaymentsSentence,
   isPaymentMethodAllowed,
   paymentMethodAvailability,
   type PaymentSettings,
@@ -43,6 +44,24 @@ describe("payment method rules (BR-17, CHK-04)", () => {
   it("never offers a method switched off in settings", () => {
     const off = { ...settings, mpesaStk: false };
     expect(available(off, "delivery", 50_000)).not.toContain("mpesa_stk");
+  });
+
+  it("describes the accepted methods for the footer (SITE-07)", () => {
+    expect(acceptedPaymentsSentence(settings)).toBe(
+      "We accept M-Pesa, pay on delivery and pay at pick-up.",
+    );
+    expect(
+      acceptedPaymentsSentence({ ...settings, payOnDelivery: false, payOnCollection: false }),
+    ).toBe("We accept M-Pesa.");
+    expect(
+      acceptedPaymentsSentence({
+        ...settings,
+        mpesaStk: false,
+        mpesaPaybill: false,
+        payOnDelivery: false,
+        payOnCollection: false,
+      }),
+    ).toBeNull();
   });
 
   it("lists M-Pesa first", () => {

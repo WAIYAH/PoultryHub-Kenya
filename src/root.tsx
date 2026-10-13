@@ -20,8 +20,24 @@ import { site } from "./config/site";
 import { useCartRehydration } from "./features/cart";
 import { ConfigError } from "./lib/env";
 import { useHydrated } from "./lib/hooks/use-hydrated";
-import { createQueryClient } from "./lib/query-client";
+import { getQueryClient } from "./lib/query-client";
+import { getServices } from "./services";
 import "./styles/app.css";
+
+/**
+ * Site settings (contact details, hours, payment options, announcement) for every page. Runs at
+ * build time, so they are in each pre-rendered page and in __spa-fallback.html; a settings change
+ * reaches visitors with the next build (deploy hook, ARCHITECTURE.md §4). Checkout fetches the
+ * payment settings fresh.
+ */
+export async function loader() {
+  return { settings: await getServices().content.getSettings() };
+}
+
+/** There is no server to ask again: the build-time settings stay for the whole visit. */
+export function shouldRevalidate() {
+  return false;
+}
 
 // Kept out of the initial bundle (NFR-PERF-3): the toast UI loads after hydration. Motion is not
 // loaded here at all; components that need it use <MotionScope> (spike S4).
@@ -59,8 +75,8 @@ export function Layout({ children }: { children: ReactNode }) {
 }
 
 export default function App() {
-  // One client per app instance (never shared across pre-rendered pages).
-  const [queryClient] = useState(createQueryClient);
+  // One client per browser tab, shared with route clientLoaders (never across pre-rendered pages).
+  const [queryClient] = useState(getQueryClient);
   const hydrated = useHydrated();
   useCartRehydration();
   useEffect(() => {
