@@ -16,41 +16,41 @@
 - [x] **P0-06** Write PLAN, REQUIREMENTS, ARCHITECTURE, DESIGN_SYSTEM, DATABASE, API_AND_INTEGRATIONS, TASKS, TESTING and `.env.example`
 - [x] **P0-07** Plan approved 2026-10-13 with the recommended defaults for D1–D5; pushing authorised (D6) ([PLAN §9](PLAN.md#9-decisions-needed-from-you))
 
-## Phase 1: Foundation & design system
+## Phase 1: Foundation & design system ✅ (2026-10-13)
 
 **Setup**
-- [ ] **P1-01** Create the `phase/1-foundation` branch. Add `.gitignore` covering `node_modules`, `build`, `.react-router`, `.env*` (but not `.env.example`), `supabase/.temp`, `supabase/functions/.env`, and Playwright and Vitest reports
-- [ ] **P1-02** Handle `Reference image.jpeg` per D2: move it to `docs/design/` or keep it out of version control
-- [ ] **P1-03** Scaffold the React Router 8 framework app with pnpm (Vite 8, React 19.3, TypeScript 6.0.3), using `appDirectory: "src"`, `ssr: false` and `prerender`
-- [ ] **P1-04** Set up `package.json`: exact versions, `packageManager`, `engines` (`node >= 22.22`) and scripts (TESTING §3). Add `.nvmrc` (24) and `pnpm-workspace.yaml` with `onlyBuiltDependencies`
-- [ ] **P1-05** TypeScript: strict mode plus `noUncheckedIndexedAccess`, `@/*` and `@contracts/*` aliases, React Router typegen wired into `typecheck`
-- [ ] **P1-06** Linting and formatting: ESLint 9 flat config (typed typescript-eslint, react-hooks, jsx-a11y, the import-boundary rules from [ARCHITECTURE §5](ARCHITECTURE.md#5-project-structure)), and Prettier with the Tailwind plugin
-- [ ] **P1-07** Vitest config (kept separate from the React Router plugin), Testing Library setup, and a first passing unit test
-- [ ] **P1-08** Playwright config (projects per TESTING §4; `webServer` builds and previews), plus an axe smoke test
-- [ ] **P1-09** GitHub Actions `ci.yml`. Pushing it depends on D6
+- [x] **P1-01** `phase/1-foundation` branch. `.gitignore` covers dependencies, build output, generated route types, `.env*` (except `.env.example`), Supabase local files and test reports
+- [x] **P1-02** The repository is public, so `Reference image.jpeg` stays out of version control (git-ignored) per D2
+- [x] **P1-03** React Router 8.4 framework app (Vite 8.3, React 19.3, TypeScript 6.0.3) with `appDirectory: "src"`, `ssr: false` and `prerender`. Every static route must be classified in `src/config/prerender.ts`, or the build fails
+- [x] **P1-04** `package.json` with exact versions, `packageManager`, `engines` and scripts; `.nvmrc`; `pnpm-workspace.yaml` (holds the jsx-a11y peer-range rule; no dependency build scripts were needed yet)
+- [x] **P1-05** TypeScript strict mode plus `noUncheckedIndexedAccess`; `@/*` and `@contracts/*` aliases (resolved natively by Vite 8); typegen runs inside `typecheck`
+- [x] **P1-06** Linting and formatting. ESLint **10** flat config (ADR-003 revised, because npm marks ESLint 9 unsupported), with typed typescript-eslint, react-hooks 7 (React Compiler rules), jsx-a11y and the layering rules. Prettier with the Tailwind plugin
+- [x] **P1-07** Vitest 5 (separate config) with Testing Library and jsdom: 12 files, 90 tests
+- [x] **P1-08** Playwright 1.64 + axe. `mobile-360` and `desktop-chrome` run by default; `E2E_FULL_MATRIX=1` adds WebKit, Firefox and tablet. 154 tests (152 passed, 2 skipped by design)
+- [x] **P1-09** `.github/workflows/ci.yml`: quality job (lint, format, types, tests, build, bundle budget, secret scan) and E2E job. **Not yet run on GitHub**, because pushing waits for your go-ahead (D6)
 
 **Design system**
-- [ ] **P1-10** Tailwind 4 tokens ([DESIGN_SYSTEM §15](DESIGN_SYSTEM.md#15-implementation)) with the default palette disabled. Base layer: typography, focus ring, reduced motion
-- [ ] **P1-11** Self-hosted Plus Jakarta Sans Variable (preloaded), Lucide, and local brand SVGs (WhatsApp and social)
-- [ ] **P1-12** shadcn/ui (Radix) primitives, themed: button, input, textarea, select, checkbox, radio-group, switch, label, form, dialog, alert-dialog, sheet, popover, dropdown-menu, tooltip, tabs, accordion, badge, avatar, separator, skeleton, sonner, breadcrumb, pagination, scroll-area
-- [ ] **P1-13** Shared components: Container, Section, SectionHeading, Eyebrow, PageHeader, PriceDisplay, StockBadge, StatusBadge, EmptyState, ErrorState, QuantitySelector, ResponsiveImage, WhatsAppLink, Reveal, JsonLd, DemoModeBanner
-- [ ] **P1-14** Motion: `LazyMotion` + `MotionConfig reducedMotion="user"`; CSS hero keyframes; `useHydrated()` hook
-- [ ] **P1-15** Placeholder logo, wordmark and favicon set (replaced if D2 provides a real logo)
+- [x] **P1-10** Tailwind 4 tokens with the default palette disabled. Base layer covers typography utilities, the focus ring (gold on dark surfaces) and reduced motion
+- [x] **P1-11** Plus Jakarta Sans Variable, self-hosted with the Latin file preloaded. Lucide icons. Brand icons generated from Simple Icons 16.35 (CC0)
+- [x] **P1-12** shadcn/ui (Radix) primitives, themed. Focus rings at full contrast, 44 px controls, 16 px inputs, brand button and badge variants. `sonner` is hand-written, because shadcn's version needs next-themes. The CLI's `cn` package was replaced by our local `cn()`
+- [x] **P1-13** Shared components: Container, Section, SectionHeading, Eyebrow, PageHeader, PriceDisplay, StockBadge, EmptyState, ErrorState, QuantitySelector, ResponsiveImage, WhatsAppLink, Reveal, DemoModeBanner, PlaceholderNotice, MotionScope. JSON-LD goes through the React Router `meta` descriptor (`src/lib/seo.ts`), so no component is needed; status badges are Badge tones
+- [x] **P1-14** Motion per spike S4: CSS hero keyframes, CSS + IntersectionObserver reveals, and `<MotionScope>` (async LazyMotion, `reducedMotion="user"`) for on-demand components; `useHydrated()`
+- [x] **P1-15** Placeholder egg-and-sprout mark, wordmark and SVG favicon, replaced when the business supplies a logo (D2)
 
 **App shell**
-- [ ] **P1-16** `routes.ts` with every route from [ARCHITECTURE §6](ARCHITECTURE.md#6-route-map) as a clearly labelled placeholder. `/dev/design-system` exists in development builds only
-- [ ] **P1-17** Layouts: Public (header, mobile nav sheet, footer, announcement bar), Checkout (minimal chrome), Account, and an Admin shell
-- [ ] **P1-18** Root ErrorBoundary, 404, access-denied, HydrateFallback, route announcer and focus management
-- [ ] **P1-19** Providers: TanStack Query client with the defaults in ARCHITECTURE §7.2; validated env (`src/lib/env.ts`)
-- [ ] **P1-20** Domain modules with unit tests: `money`, `phone`, `units`, `counties` (47), `dates` (EAT), `whatsapp`
-- [ ] **P1-21** Service contracts, mock service skeleton, and implementation selection (`services/index.ts`). Cart store skeleton (persist, `skipHydration`)
+- [x] **P1-16** `routes.ts` registers all 59 routes in ARCHITECTURE §6. Unbuilt pages share a placeholder titled from `src/config/pages.ts`. `/dev/design-system` is excluded when `VITE_APP_ENV=production`
+- [x] **P1-17** Layouts: Public (sticky frosted header, lazy mobile menu sheet, footer, demo banner), Checkout (minimal chrome), Account (tabs), Admin (sticky, scrollable sidebar plus mobile sheet). The announcement bar component is ready but not shown until content exists
+- [x] **P1-18** Root ErrorBoundary (development-only config diagnostics), 404 route (`noindex`), access-denied route, HydrateFallback, route announcer with focus moved to the page heading, skip link
+- [x] **P1-19** TanStack Query client (defaults per §7.2). Environment validation in `src/lib/env.ts` is hand-written, keeping 22 KB of Zod off every page. It rejects secret keys and mock data in production
+- [x] **P1-20** Domain modules with tests: `money`, `phone`, `units` (BR-06), `counties` (47), `dates` (EAT), `whatsapp`, `availability`
+- [x] **P1-21** Catalogue service contract with mock implementation and build-time implementation selection; cart store (persist v1, `skipHydration`). The remaining contracts (orders, payments, content, account) arrive with their Phase 2 screens
 
 **Spikes & verification**
-- [ ] **P1-22** Spike S1: dynamic pre-render plus SPA fallback for product slugs that weren't pre-rendered
-- [ ] **P1-23** Spike S2: hydration-safe cart badge and signed-in header
-- [ ] **P1-24** Spike S3: `sitemap.xml` and `robots.txt` as pre-rendered resource routes
-- [ ] **P1-25** Spike S4: measure Motion's bundle impact; add the bundle-budget script
-- [ ] **P1-26** Check every Phase 1 exit criterion ([PLAN §4](PLAN.md#4-phases)) and write the Phase 1 summary
+- [x] **P1-22** Spike S1 passed. See ARCHITECTURE §14.2
+- [x] **P1-23** Spike S2 passed
+- [x] **P1-24** Spike S3 passed
+- [x] **P1-25** Spike S4 failed the budget as designed, then fixed: public pages went from 230 KB to 136–155 KB (ADR-014, ADR-015). Bundle-budget script in CI
+- [x] **P1-26** All Phase 1 exit criteria verified (PLAN §4). Responsive review via screenshots at 360, 768 and 1280 px
 
 ## Phase 2: Customer-facing frontend on mock data 🔒
 

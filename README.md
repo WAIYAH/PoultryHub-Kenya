@@ -2,7 +2,7 @@
 
 An online shop and admin dashboard for a Kenyan poultry business. It sells eggs, chicks, live birds and farm supplies, takes M-Pesa payments, offers delivery or pick-up, and lets customers track their orders.
 
-> **Status (13 Oct 2026):** Phase 0 (discovery & planning) is **approved**. Phase 1 (foundation & design system) is next. No application code has been written yet.
+> **Status (13 Oct 2026):** Phase 1 (foundation & design system) is **complete**. The app runs on sample data, with every route scaffolded and the design system in place. Phase 2 (the full customer-facing frontend) is next.
 
 ## What it will do
 
@@ -28,8 +28,8 @@ An online shop and admin dashboard for a Kenyan poultry business. It sells eggs,
 | Phase | Scope | Status |
 |---|---|---|
 | 0 | Discovery & planning | ✅ Approved 2026-10-13 |
-| 1 | Foundation & design system | Next |
-| 2 | Customer-facing frontend on mock data (approval gate) | Planned |
+| 1 | Foundation & design system | ✅ Complete 2026-10-13 |
+| 2 | Customer-facing frontend on mock data (approval gate) | Next |
 | 3 | Supabase backend & authentication | Planned |
 | 4 | Orders, inventory, checkout & M-Pesa payments | Planned |
 | 5 | Admin dashboard | Planned |
@@ -68,13 +68,36 @@ Exact versions, and why each was chosen: [ARCHITECTURE.md §3](ARCHITECTURE.md#3
 
 ## Getting started
 
-Setup commands will be added once the app is scaffolded in Phase 1. You will need:
+**Prerequisites**
 
 - **Node.js 24 LTS**
 - **pnpm 10.28** (run `corepack enable` and the version pinned in `package.json` is used)
 - **Docker Desktop**, for the local Supabase stack (from Phase 3)
 
-Environment variables are documented in [.env.example](.env.example). Copy it to `.env.local` for local development, and never commit real values.
+**Run it**
+
+```bash
+pnpm install
+pnpm dev        # http://localhost:5173, using sample data
+```
+
+No environment file is needed while the app runs on sample data. When you do need one, copy [.env.example](.env.example) to `.env.local`, and never commit real values.
+
+**Commands**
+
+| Command | What it does |
+|---|---|
+| `pnpm dev` | Development server with hot reload |
+| `pnpm build` | Production build: public pages are pre-rendered into `build/client` |
+| `pnpm preview` | Serves `build/client` the way the production host will (SPA fallback, caching) on port 4173 |
+| `pnpm lint` / `pnpm format` | ESLint / Prettier |
+| `pnpm typecheck` | Route type generation + TypeScript |
+| `pnpm test` | Unit and component tests (Vitest) |
+| `pnpm test:e2e` | End-to-end and accessibility tests (Playwright + axe). First run: `pnpm exec playwright install chromium` |
+| `pnpm check:budget` | Fails if any public page's initial JavaScript exceeds 170 KB (gzip). Run after `pnpm build` |
+| `pnpm check` | Lint, types, unit tests, build and the bundle budget, in one go |
+
+**Living style guide:** `/dev/design-system` in development and staging builds.
 
 ## How we work
 

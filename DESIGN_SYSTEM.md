@@ -224,7 +224,7 @@ Built on shadcn/ui (Radix). All interactive components have hover, active, **foc
 
 | Component | Variants / notes |
 |---|---|
-| **Button** | `primary` (forest-900, white) · `accent` (gold-400, ink-900; for dark surfaces and the single hero call to action) · `secondary` (outline forest-900) · `outline-inverse` (on dark, `white/40` border) · `ghost` · `link` (with trailing arrow) · `destructive` (danger). Sizes `sm` 36 px, `md` 44 px, `lg` 52 px, `icon` 44 px. Active `scale(0.98)`. Loading shows a spinner, sets `aria-busy` and keeps its width |
+| **Button** | Variants, with implemented names in brackets:<ul><li>Primary (`default`): forest-900, white.</li><li>`accent`: gold-400, ink-900. For dark surfaces and the single hero call to action.</li><li>Secondary action (`outline`): forest-900 border.</li><li>Soft (`secondary`): forest-100 fill.</li><li>`outline-inverse`: on dark, `white/40` border.</li><li>`ghost`.</li><li>`link`: with trailing arrow.</li><li>`destructive`: danger.</li></ul>Sizes: `sm` 36 px, `default` 44 px, `lg` 52 px, `icon` 44 px, `icon-sm` 36 px.<br>Active state: `scale(0.98)`.<br>`loading`: shows a spinner, sets `aria-busy`, disables the button and keeps its label |
 | **Input / Textarea / Select / Checkbox / RadioGroup / Switch** | 44 px minimum height; ink-400 border; forest-700 focus ring; error state with danger border and message linked by `aria-describedby` |
 | **FormField** | Label + control + hint + error. Required marked in text ("required"), not only by `*` |
 | **RadioCard** | For fulfilment and payment choices: big tap target, icon, title, description, price note |
@@ -336,7 +336,9 @@ Order is mobile-first. Each section maps to the reference where one exists.
 
 ## 12. Motion system
 
-Motion for React (`motion/react`) through `LazyMotion` + `m` components. CSS handles simple hovers and transitions.
+**CSS first.** Hovers, transitions, entrance animations and scroll reveals are plain CSS.
+
+**Motion for React** (`motion/react`) is reserved for what CSS does badly: exit animations (`AnimatePresence`), layout animations and springs. It loads only inside the components that use it, wrapped in `<MotionScope>`, which loads async `LazyMotion` features. Loading Motion app-wide cost ~20 KB gzip on every page (spike S4, ADR-014).
 
 | Token | Value | Use |
 |---|---|---|
@@ -351,7 +353,9 @@ Motion for React (`motion/react`) through `LazyMotion` + `m` components. CSS han
 **Patterns**
 
 - **Hero entrance:** **CSS keyframes** (fade + 12 px rise, staggered 80 ms across headline, text and calls to action). They run before hydration, so pre-rendered content animates without waiting for JS.
-- **Section reveals:** a `<Reveal>` wrapper using `whileInView` (`once: true`, `amount: 0.2`), applied **only after hydration and only to elements below the fold at that moment**. Anything already visible is never hidden.
+- **Section reveals:** a `<Reveal>` wrapper using CSS + `IntersectionObserver` (threshold 0.2, once).
+  - It arms **only after hydration, and only for elements below the fold at that moment**. Anything already visible is never hidden.
+  - Printing always shows armed content.
 - **Product grids:** 40 ms stagger, capped at 8 items. Later items appear immediately.
 - **Cart feedback:** badge bump (spring) + toast "Added 2 × Tray of 30 to cart" + a polite live-region announcement. On desktop, an optional 2-second drawer peek. No "fly to cart" effect.
 - **Drawers and dialogs:** slide or fade over 320 ms with a backdrop fade. **Accordions:** height via the Radix CSS variable `--radix-accordion-content-height`.
@@ -444,7 +448,9 @@ Motion for React (`motion/react`) through `LazyMotion` + `m` components. CSS han
   --popover: var(--color-white);         --popover-foreground: var(--color-ink-900);
   --primary: var(--color-forest-900);    --primary-foreground: var(--color-white);
   --secondary: var(--color-forest-100);  --secondary-foreground: var(--color-forest-900);
-  --accent: var(--color-gold-400);       --accent-foreground: var(--color-ink-900);
+  --accent: var(--color-forest-50);      --accent-foreground: var(--color-forest-900);
+  /* shadcn uses "accent" for subtle hover backgrounds (menus, ghost buttons), so it must stay
+     quiet. Gold is applied directly through the `accent` *button variant* (bg-gold-400). */
   --muted: var(--color-forest-50);       --muted-foreground: var(--color-ink-600);
   --destructive: var(--color-danger);    --destructive-foreground: var(--color-white);
   --border: var(--color-line);           --input: var(--color-ink-400);
