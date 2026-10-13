@@ -2,8 +2,8 @@ import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import { Suspense, lazy } from "react";
 import { Link } from "react-router";
 
-import { WhatsAppIcon } from "@/components/shared/brand-icons";
 import { Container } from "@/components/shared/container";
+import { WhatsAppIcon } from "@/components/shared/whatsapp-icon";
 import { WhatsAppLink } from "@/components/shared/whatsapp-link";
 import type { NavLink } from "@/config/site";
 import { formatKenyanMobile } from "@/domain/phone";

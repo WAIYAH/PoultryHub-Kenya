@@ -1,8 +1,8 @@
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router";
 
-import { WhatsAppIcon } from "@/components/shared/brand-icons";
 import { ResponsiveImage } from "@/components/shared/responsive-image";
+import { WhatsAppIcon } from "@/components/shared/whatsapp-icon";
 import { WhatsAppLink } from "@/components/shared/whatsapp-link";
 import { Button } from "@/components/ui/button";
 import type { HomeContent } from "@/types/domain";

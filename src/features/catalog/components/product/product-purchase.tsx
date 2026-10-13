@@ -2,10 +2,10 @@ import { MessageCircleQuestion, ShoppingBag, Store, Truck } from "lucide-react";
 import { useEffect, useRef, useState, type RefObject } from "react";
 import { Link } from "react-router";
 
-import { WhatsAppIcon } from "@/components/shared/brand-icons";
 import { PriceDisplay } from "@/components/shared/price-display";
 import { QuantitySelector } from "@/components/shared/quantity-selector";
 import { StockBadge } from "@/components/shared/stock-badge";
+import { WhatsAppIcon } from "@/components/shared/whatsapp-icon";
 import { WhatsAppLink } from "@/components/shared/whatsapp-link";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { deriveAvailability } from "@/domain/availability";

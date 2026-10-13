@@ -10,7 +10,6 @@ import {
   FacebookIcon,
   InstagramIcon,
   TikTokIcon,
-  WhatsAppIcon,
   XIcon,
   YouTubeIcon,
 } from "@/components/shared/brand-icons";
@@ -25,6 +24,7 @@ import { Reveal } from "@/components/shared/reveal";
 import { Section } from "@/components/shared/section";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { StockBadge } from "@/components/shared/stock-badge";
+import { WhatsAppIcon } from "@/components/shared/whatsapp-icon";
 import {
   Accordion,
   AccordionContent,

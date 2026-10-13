@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Fragment } from "react";
+import { Fragment, Suspense, lazy } from "react";
 import { Link, data, isRouteErrorResponse } from "react-router";
 
 import { Container } from "@/components/shared/container";
@@ -16,7 +16,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import {
   ProductDetails,
   ProductGallery,
-  ProductGrid,
   ProductPurchase,
   catalogQueries,
   productJsonLd,
@@ -26,6 +25,14 @@ import { breadcrumbJsonLd, pageMeta } from "@/lib/seo";
 import { getServices } from "@/services";
 
 import type { Route } from "./+types/product";
+
+// Related products sit below the fold, so their cards load after the buy box (NFR-PERF-3). The
+// pre-rendered HTML shows them straight away and hydrates once the chunk arrives.
+const RelatedProducts = lazy(() =>
+  import("@/features/catalog/components/product/related-products").then((m) => ({
+    default: m.RelatedProducts,
+  })),
+);
 
 // Product details (CAT-05). Pre-rendered for every active product at build time; products
 // published after the build load through the SPA fallback and clientLoader (spike S1). Price and
@@ -150,22 +157,9 @@ export default function ProductRoute({ loaderData }: Route.ComponentProps) {
       </Container>
 
       {related.length > 0 ? (
-        <section aria-labelledby="related-heading" className="bg-forest-50 py-12 sm:py-16">
-          <Container className="flex flex-col gap-8">
-            <div className="flex flex-wrap items-end justify-between gap-3">
-              <h2 id="related-heading" className="text-h2 text-ink-900">
-                More {product.category.name.toLowerCase()}
-              </h2>
-              <Link
-                to={`/shop/${product.category.slug}`}
-                className="text-sm font-semibold text-forest-700 underline-offset-4 hover:underline"
-              >
-                View all {product.category.name.toLowerCase()}
-              </Link>
-            </div>
-            <ProductGrid products={related} />
-          </Container>
-        </section>
+        <Suspense fallback={null}>
+          <RelatedProducts category={product.category} products={related} />
+        </Suspense>
       ) : null}
     </>
   );

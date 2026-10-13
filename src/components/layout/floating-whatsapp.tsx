@@ -1,4 +1,4 @@
-import { WhatsAppIcon } from "@/components/shared/brand-icons";
+import { WhatsAppIcon } from "@/components/shared/whatsapp-icon";
 import { WhatsAppLink } from "@/components/shared/whatsapp-link";
 
 /**

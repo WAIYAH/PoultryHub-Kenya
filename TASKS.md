@@ -61,15 +61,15 @@
 
 **Pages & features**
 - [x] **P2-04** Home: every section in [DESIGN_SYSTEM §10.1](DESIGN_SYSTEM.md#101-home-page-blueprint). Content from the build-time loader; category prices and featured products revalidate in the browser. Testimonials are hidden while none are published (their carousel loads on demand)
-- [ ] **P2-05** Shop and category pages: grid, filters (a sheet on mobile), search, sort, pagination, URL state, removable filter chips
-- [ ] **P2-06** Product details: gallery, variant picker, quantity rules, sticky mobile buy bar, specifications, delivery info, related products, WhatsApp enquiry
-- [ ] **P2-07** Cart: drawer and page, quantity rules, price-change notices, delivery estimate, promo field, "Order again"
+- [x] **P2-05** Shop and category pages: grid, filters (sidebar on desktop, a lazy sheet on mobile), search, sort, numbered pagination, removable filter chips. Filters live in the URL (unit-tested); pre-rendered pages show the unfiltered view until hydration. Loading, empty and error states
+- [x] **P2-06** Product details: gallery, variant picker, quantity rules (BR-06), sticky mobile buy bar, specifications, delivery and pick-up info, product FAQs, related products, WhatsApp enquiry; quote requests for enquiry-only products. Product and BreadcrumbList JSON-LD. Price and stock revalidate after hydration; related products load after the buy box
+- [x] **P2-07** Cart: drawer and page, quantity rules, server-checked lines with one-tap fixes (price change, stock, quantity rule, unavailable), delivery estimate by county and area, promo field. Cart store v2 with migration saves the promo code and area. The "Order again" action is in the store; its button ships with the order and account pages (P2-09, P2-10)
 - [ ] **P2-08** Checkout: sections; Kenyan phone and address model; fulfilment and payment rules; draft persistence; error summary; idempotent submit; recovery screens (`PRICE_CHANGED`, `INSUFFICIENT_STOCK`, `AREA_NOT_SERVED`)
 - [ ] **P2-09** Order page: confirmation, demo M-Pesa panel states, timeline, printable receipt. Track Order page
 - [ ] **P2-10** Auth screens (sign in, sign up, forgot and reset password, callback) on mock auth. Account overview, orders, profile, addresses, security
 - [ ] **P2-11** About, Services, Contact (validated form, mock submit), FAQ, Blog index and post, Search, Policies (templates marked as drafts)
 - [x] **P2-12** Announcement bar (in the pre-rendered HTML, so no layout shift), floating WhatsApp button (not in checkout or admin; lifts above sticky bars), footer with hours, payment methods and real social links only. Site settings load in the root loader. Without a configured number, demo builds use WhatsApp's share link and real builds hide WhatsApp
-- [ ] **P2-13** Loading, empty, error, success and offline states on every data view
+- [ ] **P2-13** Loading, empty, error, success and offline states on every data view. Done so far: offline banner; home, shop, category, product and cart
 - [ ] **P2-14** Motion and micro-interactions per [DESIGN_SYSTEM §12](DESIGN_SYSTEM.md#12-motion-system)
 - [ ] **P2-15** SEO: meta per route, canonical URLs, OG images, JSON-LD (known fields only), sitemap, robots, `noindex` rules
 

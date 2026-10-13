@@ -3,12 +3,12 @@ import { SearchX, SlidersHorizontal } from "lucide-react";
 import { Suspense, lazy, useRef, useState, type FormEvent } from "react";
 import { Link } from "react-router";
 
-import { WhatsAppIcon } from "@/components/shared/brand-icons";
 import { Container } from "@/components/shared/container";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ErrorState } from "@/components/shared/error-state";
 import { PageHeader, type Crumb } from "@/components/shared/page-header";
 import { PageLinks } from "@/components/shared/page-links";
+import { WhatsAppIcon } from "@/components/shared/whatsapp-icon";
 import { WhatsAppLink } from "@/components/shared/whatsapp-link";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { useWhatsappHref } from "@/features/content";
