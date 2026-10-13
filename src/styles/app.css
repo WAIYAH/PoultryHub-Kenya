@@ -257,6 +257,18 @@
   }
 }
 
+/* Sonner 2.0 gives its mobile toaster a 16px inset on both sides and width: 100%, so it pokes 16px
+   past the right edge and phones let the page pan sideways while a toast shows (NFR-COMP-2). Use
+   the insets alone. Unlayered and more specific than Sonner's runtime-injected rules. */
+@media (max-width: 600px) {
+  [data-sonner-toaster][data-sonner-theme] {
+    width: auto;
+  }
+  [data-sonner-toaster][data-sonner-theme] [data-sonner-toast] {
+    width: 100%;
+  }
+}
+
 /* A page with a print area (the order receipt, ORD-04) prints only that, without site chrome. */
 @media print {
   body:has([data-print-area]) * {
