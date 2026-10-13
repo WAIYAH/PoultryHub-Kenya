@@ -55,8 +55,8 @@
 ## Phase 2: Customer-facing frontend on mock data 🔒
 
 **Data**
-- [ ] **P2-01** Typed fixtures, all marked `SAMPLE`: categories; about 20 products across every type (variants, units, MOQ, step, availability); zones, areas and pick-up points; settings; content blocks; FAQs; testimonials (empty by default); blog posts; example orders
-- [ ] **P2-02** Mock services: simulated latency, errors and empty results (`?mock=`); stock-aware cart quote; demo order placement; demo payment state machine; mock auth with demo accounts
+- [x] **P2-01** Typed fixtures, all marked `SAMPLE`: 4 categories; 20 products across every type (variants, units, MOQ, step, pre-order batches, enquiry-only, pick-up-only, Swahili keywords); 3 zones, 17 areas and 2 pick-up points; settings; content blocks; 12 FAQs; testimonials (empty by default); 5 blog posts; 4 policy templates; 3 promo codes; a demo account with 3 example orders
+- [x] **P2-02** Mock services for all nine contracts, each loaded on first use (`src/services/lazy.ts`) so fixtures stay out of initial bundles. Fixed 250 ms latency; `?mock=slow|empty|error` plus checkout scenarios `price-changed|low-stock|area-closed`; stock-aware quote with promos and zone fees; idempotent order placement with every recovery error; hold expiry; demo M-Pesa state machine; mock auth with email-link codes. Demo writes persist in `localStorage` (`phk-demo-state`). 47 tests named by rule ID
 - [ ] **P2-03** Source illustrative images (licensed, recorded in `public/images/CREDITS.md`) and generate responsive variants of static assets
 
 **Pages & features**
