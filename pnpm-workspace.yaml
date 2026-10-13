@@ -1,0 +1,8 @@
+# pnpm settings for this single-package repository.
+
+peerDependencyRules:
+  allowedVersions:
+    # eslint-plugin-jsx-a11y 6.10.2 still declares ESLint <= 9, but its rules were verified
+    # to run correctly on ESLint 10 (ARCHITECTURE.md ADR-003). ESLint 9 is no longer supported.
+    # Remove once upstream ships ESLint 10 support (jsx-eslint/eslint-plugin-jsx-a11y#1075).
+    eslint-plugin-jsx-a11y>eslint: "10"

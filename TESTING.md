@@ -40,7 +40,9 @@ Scripts are added **only when the tool and config exist**, so there are no dead 
 | `pnpm test:e2e` / `pnpm test:e2e:ui` | Playwright (its `webServer` builds and previews) | Phase 1 |
 | `pnpm db:start` · `db:reset` · `db:test` · `db:types` | Local Supabase, pgTAP, type generation | Phase 3 |
 | `pnpm test:integration` | Integration project (needs `pnpm db:start`) | Phase 4 |
-| `pnpm check` | lint + typecheck + test + build (pre-push) | Phase 1 |
+| `pnpm preview` | Serves `build/client` like the production host (`scripts/serve-static.mjs`); also used by Playwright | Phase 1 |
+| `pnpm check:budget` | Initial-JS budget per pre-rendered page (`scripts/check-bundle-budget.mjs`, NFR-PERF-3) | Phase 1 |
+| `pnpm check` | lint + typecheck + test + build + budget (pre-push) | Phase 1 |
 
 ## 4. Environments, data & devices
 

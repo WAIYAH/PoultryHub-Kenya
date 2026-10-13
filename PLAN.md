@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Status** | Phase 0 **approved on 2026-10-13** with the recommended defaults for D1–D5; pushing authorised (D6). **Phase 1 is next.** |
+| **Status** | Phase 0 approved 2026-10-13. **Phase 1 complete (2026-10-13)** on branch `phase/1-foundation`. Phase 2 is next |
 | **Last updated** | 2026-10-13 |
 | **Repository** | `github.com/WAIYAH/PoultryHub-Kenya` |
 | **Related documents** | [REQUIREMENTS](REQUIREMENTS.md) · [ARCHITECTURE](ARCHITECTURE.md) · [DESIGN_SYSTEM](DESIGN_SYSTEM.md) · [DATABASE](DATABASE.md) · [API_AND_INTEGRATIONS](API_AND_INTEGRATIONS.md) · [TASKS](TASKS.md) · [TESTING](TESTING.md) · [.env.example](.env.example) |
@@ -56,7 +56,7 @@ Every phase ends with a written summary that separates **what was verified** fro
 - **Deliverables:** this plan; REQUIREMENTS, ARCHITECTURE, DESIGN_SYSTEM, DATABASE, API_AND_INTEGRATIONS, TASKS and TESTING; `.env.example`.
 - **Gate 🔒:** your approval of the plan and answers to decisions D1–D6 (§9). ✅ **Approved 2026-10-13.**
 
-### Phase 1: Foundation & design system
+### Phase 1: Foundation & design system ✅
 
 - **Goal:** a running, linted, tested skeleton. The design system exists, every route is stubbed, and the rendering architecture is proven.
 - **Deliverables**
@@ -69,11 +69,11 @@ Every phase ends with a written summary that separates **what was verified** fro
   - **Design-system page:** a development-only `/dev/design-system` page showing every token, component and state.
   - **Spikes:** S1–S4 ([ARCHITECTURE §14.2](ARCHITECTURE.md#142-phase-1-spikes)).
 - **Exit criteria**
-  - [ ] From a fresh clone, `pnpm install --frozen-lockfile && pnpm build` succeeds, and `build/client` contains pre-rendered HTML for the static routes plus `__spa-fallback.html`.
-  - [ ] `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm test:e2e` and `pnpm preview` all work.
-  - [ ] Header, footer and mobile navigation work by keyboard and touch at 360, 768 and 1280 px, with no horizontal scroll at 360 px.
-  - [ ] axe reports zero serious or critical violations on the design-system page and the home stub.
-  - [ ] Spike results are recorded and ADR-001 is confirmed. If it needs revising, I'll come back to you first.
+  - [x] From a fresh clone, `pnpm install --frozen-lockfile && pnpm build` succeeds, and `build/client` contains pre-rendered HTML for the static routes plus `__spa-fallback.html`.
+  - [x] `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm test:e2e` and `pnpm preview` all work.
+  - [x] Header, footer and mobile navigation work by keyboard and touch at 360, 768 and 1280 px, with no horizontal scroll at 360 px.
+  - [x] axe reports zero serious or critical violations on the design-system page and the home stub.
+  - [x] Spike results are recorded and ADR-001 is confirmed. If it needs revising, I'll come back to you first.
 
 ### Phase 2: Complete customer-facing frontend on mock data. Gate 🔒
 

@@ -1,0 +1,10 @@
+build/
+.react-router/
+node_modules/
+coverage/
+playwright-report/
+test-results/
+blob-report/
+pnpm-lock.yaml
+# Planning documents are hand-formatted (wide tables); keep Prettier off them.
+*.md

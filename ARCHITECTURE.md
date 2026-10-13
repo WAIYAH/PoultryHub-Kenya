@@ -76,7 +76,7 @@ Versions were checked against the npm registry on **2026-10-13**. They will be p
 | Components | `shadcn` (CLI, development only), `radix-ui` | 4.21.x / 1.8.x | We own the copied component code. Radix provides accessible primitives |
 | Utilities | `class-variance-authority`, `clsx`, `tailwind-merge` | 0.7.1 / 2.1.1 / 3.7.x | Component variants and class merging (shadcn standard) |
 | Icons | `lucide-react` | 1.56.x | Consistent stroke icons. Brand icons (WhatsApp, etc.) are local SVGs |
-| Animation | `motion` | 14.1.x | Motion for React (`motion/react`), used through `LazyMotion` to keep bundles small |
+| Animation | `motion` | 14.1.x | Motion for React (`motion/react`), loaded **only inside components that need exit or layout animation** (`<MotionScope>` with async `LazyMotion` features). Scroll reveals and hovers use CSS (spike S4, ADR-014) |
 | Server state | `@tanstack/react-query` | 5.104.x | Caching, retries, background revalidation, polling |
 | Forms | `react-hook-form`, `@hookform/resolvers`, `zod` | 7.90.x / 5.9.x / 4.6.x | Typed forms. The same Zod schemas validate Edge Function input |
 | Client state | `zustand` | 5.0.x | The persisted cart, and almost nothing else |
@@ -90,12 +90,13 @@ Versions were checked against the npm registry on **2026-10-13**. They will be p
 | Unit / component tests | `vitest`, `@testing-library/react`, `@testing-library/user-event`, `@testing-library/jest-dom`, `jsdom` | 5.0.x / 16.3.x / 14.6.x / 7.0.x / 30.x | Fast tests that share Vite's transform pipeline |
 | E2E tests | `@playwright/test`, `@axe-core/playwright` | 1.64.x / 4.13.x | Cross-browser flows plus accessibility scans |
 | Database tests | pgTAP via `supabase test db` | bundled | RLS and function tests inside Postgres |
-| Lint / format | `eslint` **9.39.x**, `typescript-eslint` 8.71.x, `eslint-plugin-react-hooks` 7.1.x, `eslint-plugin-jsx-a11y` 6.10.x, `prettier` 3.9.x, `prettier-plugin-tailwindcss` 0.8.x | — | **ESLint 9, not 10:** jsx-a11y 6.10.2 declares support only up to ESLint 9. ESLint 9 still gets patch releases (9.39.5, Jul 2026). Revisit when jsx-a11y supports ESLint 10 |
+| Lint / format | `eslint` **10.9.x**, `@eslint/js` 10.0.x, `typescript-eslint` 8.71.x, `eslint-plugin-react-hooks` 7.1.x, `eslint-plugin-jsx-a11y` 6.10.x, `prettier` 3.9.x, `prettier-plugin-tailwindcss` 0.8.x | — | **ESLint 10 (revised in Phase 1, ADR-003):** npm now marks ESLint 9 as unsupported. jsx-a11y 6.10.2 still declares ESLint ≤ 9, but a probe confirmed its rules run correctly on ESLint 10, so the peer range is allowed in `pnpm-workspace.yaml` until upstream ships support (jsx-a11y issue #1075) |
 
 **Deliberately excluded**
 
 - **`vaul`:** not published since Dec 2024. Drawers use Radix Dialog (the shadcn `Sheet`).
 - **`@vitejs/plugin-react`:** React Router's Vite plugin handles the app. Vitest gets its own config without the React Router plugin.
+- **The `cn` npm package:** the shadcn CLI now installs it by default. We keep the local `cn()` in `src/lib/utils.ts`, which extends tailwind-merge so custom utilities (`text-h2`, `shadow-card`) aren't dropped as conflicts.
 - **Carousel libraries:** testimonials use CSS scroll-snap.
 - **CSS-in-JS:** not needed.
 - **Redux:** not needed.
@@ -424,6 +425,10 @@ All four set `verify_jwt = false` deliberately. The new publishable and secret k
 - **Fonts:** one self-hosted variable font, Latin subset only, preloaded, `font-display: swap`.
 - **Data:** aggregated RPCs (`quote_cart`) and views keep round trips down. Queries select only the columns they need.
 - **Budgets:** enforced in CI for public route JS (≤ 170 KB gzipped). Lighthouse is checked on every phase gate.
+- **Measured at the end of Phase 1:**
+  - **Per page:** 136 KB (SPA fallback) to 155 KB (product pages) of initial JS, gzipped.
+  - **Fixed cost:** React and React Router account for ~92 KB of that; TanStack Query ~11 KB; tailwind-merge ~9 KB.
+  - **Headroom:** about 15 KB is left for Phase 2 public features, so the cart drawer, filters and similar must load on demand.
 
 ## 11. SEO strategy
 
@@ -472,7 +477,7 @@ All four set `verify_jwt = false` deliberately. The new publishable and secret k
 |---|---|---|
 | ADR-001 | React Router 8 framework mode, `ssr:false`, build-time pre-rendering of public routes (§4) | Accepted (D1) |
 | ADR-002 | TypeScript 6.0.3, not 7.x, until typescript-eslint supports TS 7 | Accepted |
-| ADR-003 | ESLint 9.39.x, not 10.x, until jsx-a11y supports ESLint 10 | Accepted |
+| ADR-003 | ~~ESLint 9.39.x~~ **Revised in Phase 1:** ESLint 10.9 with jsx-a11y 6.10.2 under a documented peer-range override, because npm marks ESLint 9 unsupported and jsx-a11y was verified to work on 10 | Accepted (revised 2026-10-13) |
 | ADR-004 | Money is `bigint` minor units, whole shillings, KES only | Accepted |
 | ADR-005 | Products → variants. Unit, price, MOQ, step and stock live on the variant | Accepted |
 | ADR-006 | Reserve stock when the order is placed. Unpaid M-Pesa orders get a TTL. Stock changes go through a ledger, with row locks taken in a fixed order | Accepted |
@@ -483,12 +488,16 @@ All four set `verify_jwt = false` deliberately. The new publishable and secret k
 | ADR-011 | Guest checkout with hashed access tokens, Turnstile, holds and per-phone caps | Accepted (D4) |
 | ADR-012 | Supabase publishable/secret keys from day one; legacy keys never used | Accepted |
 | ADR-013 | An order is paid only after callback + STK Query verification or a staff record | Accepted |
+| ADR-014 | Motion is scoped to on-demand components (`<MotionScope>`); scroll reveals use CSS + IntersectionObserver. App-wide Motion cost ~20 KB gzip on every page (spike S4) | Accepted (Phase 1) |
+| ADR-015 | Initial-bundle discipline: no app-wide tooltip provider (each tooltip carries its own), toasts and the mobile menu sheet load on demand, env validation without Zod. Took public pages from ~230 KB to ≤ 156 KB gzip | Accepted (Phase 1) |
 
 ### 14.2 Phase 1 spikes
 
-| Spike | Question | Pass criterion |
-|---|---|---|
-| **S1** | Does a product slug that wasn't pre-rendered, served by `__spa-fallback.html`, load correctly through `clientLoader` (with `hydrate = true`), while pre-rendered slugs hydrate from build-time data? | Both paths render the right product with no console errors; client navigation between them works |
-| **S2** | Can the persisted cart count and signed-in header state hydrate without mismatch warnings? | No hydration warnings; the badge updates after hydration without layout shift |
-| **S3** | Can `sitemap.xml` and `robots.txt` be pre-rendered resource routes? | Valid files in `build/client`. Otherwise, a post-build script |
-| **S4** | What does Motion cost on public routes with `LazyMotion` + `domAnimation`? | Within the 170 KB public-route budget |
+All four spikes ran in Phase 1 (2026-10-13). Evidence is in `e2e/foundation.spec.ts` and `scripts/check-bundle-budget.mjs`.
+
+| Spike | Question | Pass criterion | Result |
+|---|---|---|---|
+| **S1** | Does a product slug that wasn't pre-rendered, served by `__spa-fallback.html`, load correctly through `clientLoader`, while pre-rendered slugs hydrate from build-time data? | Both paths render the right product with no console errors; client navigation between them works | ✅ **Pass.** Pre-rendered pages carry the product and its `Product` JSON-LD in the raw HTML. A slug added after the build is served by the fallback, and `clientLoader` runs automatically; no `clientLoader.hydrate` flag is needed. Client navigation between both kinds works without reloads, and unknown slugs reach the route error boundary as a 404 |
+| **S2** | Can the persisted cart count and signed-in header state hydrate without mismatch warnings? | No hydration warnings; the badge updates after hydration without layout shift | ✅ **Pass.** Zustand `persist` with `skipHydration`, rehydrated in an effect, plus `useHydrated()` gating. The badge appears after hydration and survives reloads with zero console or hydration errors |
+| **S3** | Can `sitemap.xml` and `robots.txt` be pre-rendered resource routes? | Valid files in `build/client`. Otherwise, a post-build script | ✅ **Pass.** Resource routes with loaders are written as static files. Non-production builds emit `Disallow: /` |
+| **S4** | What does Motion cost on public routes with `LazyMotion` + `domAnimation`? | Within the 170 KB public-route budget | ⚠️ **Failed as designed, then fixed.** App-wide Motion cost ~20 KB gzip. Together with other app-wide modules, public pages reached ~230 KB. Resolved by ADR-014 and ADR-015, bringing every public page to **136–155 KB** |
