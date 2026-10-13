@@ -37,7 +37,10 @@ export function CartPage() {
     return (
       <>
         <PageHeader title="Your cart" crumbs={CRUMBS} />
-        <Container className="grid grid-cols-1 gap-6 py-10 lg:grid-cols-[minmax(0,1fr)_22rem]" aria-busy="true">
+        <Container
+          className="grid grid-cols-1 gap-6 py-10 lg:grid-cols-[minmax(0,1fr)_22rem]"
+          aria-busy="true"
+        >
           <Skeleton className="h-64 w-full rounded-lg" />
           <Skeleton className="h-64 w-full rounded-lg" />
           <span className="sr-only">Loading your cart…</span>

@@ -71,7 +71,10 @@ export function CheckoutPage() {
 
   if (!ready) {
     return (
-      <Container className="grid grid-cols-1 gap-6 pb-12 lg:grid-cols-[minmax(0,1fr)_24rem]" aria-busy="true">
+      <Container
+        className="grid grid-cols-1 gap-6 pb-12 lg:grid-cols-[minmax(0,1fr)_24rem]"
+        aria-busy="true"
+      >
         <div className="flex flex-col gap-6">
           <Skeleton className="h-10 w-48" />
           <Skeleton className="h-72 w-full rounded-lg" />
