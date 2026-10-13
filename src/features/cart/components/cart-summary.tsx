@@ -40,12 +40,15 @@ export function CartSummary({
   quote,
   itemCount,
   pending = false,
+  deliveryPendingText = "Calculated at checkout",
   className,
 }: {
   quote: CartQuote | undefined;
   itemCount: number;
   /** A newer quote is loading: show the previous figures faded. */
   pending?: boolean;
+  /** The delivery line before a fee is known. */
+  deliveryPendingText?: string;
   className?: string;
 }) {
   if (!quote) {
@@ -85,7 +88,7 @@ export function CartSummary({
           testId="summary-delivery"
           value={
             !deliveryKnown ? (
-              <span className="text-sm text-ink-600">Calculated at checkout</span>
+              <span className="text-sm text-ink-600">{deliveryPendingText}</span>
             ) : quote.deliveryFeeMinor === 0 ? (
               quote.delivery ? (
                 "Free"

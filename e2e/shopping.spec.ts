@@ -50,9 +50,13 @@ test.describe("shopping", () => {
     await expect(page).toHaveURL(/\/shop\/eggs$/);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(/eggs/i);
 
-    await withFilters(page, isMobile, (panel) =>
-      panel.getByRole("checkbox", { name: "In stock" }).check(),
-    );
+    // The box reflects the URL, which updates a few milliseconds after the tap, so click it and
+    // wait for the result rather than `check()`, which expects an instant change.
+    await withFilters(page, isMobile, async (panel) => {
+      const inStock = panel.getByRole("checkbox", { name: "In stock" });
+      await inStock.click();
+      await expect(inStock).toBeChecked();
+    });
     await expect(page).toHaveURL(/\/shop\/eggs\?availability=in_stock$/);
     await expect(page.getByRole("button", { name: "In stock (remove filter)" })).toBeVisible();
     await expect(page.getByTestId("result-count")).toHaveText(/^\d+ products?$/);

@@ -4,6 +4,7 @@ import { Container } from "@/components/shared/container";
 import { Button } from "@/components/ui/button";
 import { DEFAULT_SHOP_STATE, ShopView, catalogQueries, toProductQuery } from "@/features/catalog";
 import { getQueryClient } from "@/lib/query-client";
+import { revalidateOnPathChange } from "@/lib/revalidate";
 import { breadcrumbJsonLd, pageMeta } from "@/lib/seo";
 
 import type { Route } from "./+types/category";
@@ -29,6 +30,8 @@ export async function loader({ params }: Route.LoaderArgs) {
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   return loadCategory(params.categorySlug);
 }
+
+export const shouldRevalidate = revalidateOnPathChange;
 
 function crumbsFor(name: string) {
   return [{ label: "Home", href: "/" }, { label: "Shop", href: "/shop" }, { label: name }];

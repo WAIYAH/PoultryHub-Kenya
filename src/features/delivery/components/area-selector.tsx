@@ -22,6 +22,7 @@ export function AreaSelector({
   countyError,
   areaError,
   onChooseCollection,
+  ids,
   className,
 }: {
   areas: DeliveryArea[];
@@ -33,9 +34,13 @@ export function AreaSelector({
   areaError?: string;
   /** Offers "Choose pick-up instead" when the customer's area isn't listed. */
   onChooseCollection?: () => void;
+  /** Element ids for the two selects, e.g. so a form's error summary can link to them. */
+  ids?: { county: string; area: string };
   className?: string;
 }) {
-  const id = useId();
+  const generated = useId();
+  const countyId = ids?.county ?? `${generated}-county`;
+  const areaSelectId = ids?.area ?? `${generated}-area`;
   const settings = useSiteSettings();
   const counties = [...new Set(areas.map((area) => area.county))].sort((a, b) =>
     a.localeCompare(b, "en-KE"),
@@ -51,11 +56,11 @@ export function AreaSelector({
     <div className={cn("flex flex-col gap-3", className)}>
       <div className="grid gap-3 sm:grid-cols-2">
         <div className="flex flex-col gap-1.5">
-          <label htmlFor={`${id}-county`} className="text-sm font-medium text-ink-900">
+          <label htmlFor={countyId} className="text-sm font-medium text-ink-900">
             County
           </label>
           <select
-            id={`${id}-county`}
+            id={countyId}
             name="county"
             autoComplete="address-level1"
             value={county}
@@ -64,7 +69,7 @@ export function AreaSelector({
               onAreaChange("");
             }}
             aria-invalid={countyError ? true : undefined}
-            aria-describedby={countyError ? `${id}-county-error` : undefined}
+            aria-describedby={countyError ? `${countyId}-error` : undefined}
             className={select}
           >
             <option value="">Choose a county</option>
@@ -75,24 +80,24 @@ export function AreaSelector({
             ))}
           </select>
           {countyError ? (
-            <p id={`${id}-county-error`} className="text-sm text-danger">
+            <p id={`${countyId}-error`} className="text-sm text-danger">
               {countyError}
             </p>
           ) : null}
         </div>
         <div className="flex flex-col gap-1.5">
-          <label htmlFor={`${id}-area`} className="text-sm font-medium text-ink-900">
+          <label htmlFor={areaSelectId} className="text-sm font-medium text-ink-900">
             Area
           </label>
           <select
-            id={`${id}-area`}
+            id={areaSelectId}
             name="deliveryAreaId"
             autoComplete="address-level2"
             value={areaId}
             disabled={!county}
             onChange={(event) => onAreaChange(event.target.value)}
             aria-invalid={areaError ? true : undefined}
-            aria-describedby={areaError ? `${id}-area-error` : undefined}
+            aria-describedby={areaError ? `${areaSelectId}-error` : undefined}
             className={select}
           >
             <option value="">{county ? "Choose an area" : "Choose a county first"}</option>
@@ -103,7 +108,7 @@ export function AreaSelector({
             ))}
           </select>
           {areaError ? (
-            <p id={`${id}-area-error`} className="text-sm text-danger">
+            <p id={`${areaSelectId}-error`} className="text-sm text-danger">
               {areaError}
             </p>
           ) : null}

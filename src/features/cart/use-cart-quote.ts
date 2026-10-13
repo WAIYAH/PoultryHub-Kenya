@@ -14,6 +14,7 @@ export interface QuoteOptions {
 }
 
 export const cartKeys = {
+  quotes: () => ["cart", "quote"] as const,
   quote: (input: CartQuoteInput) => ["cart", "quote", input] as const,
 };
 

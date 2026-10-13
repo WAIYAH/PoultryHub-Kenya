@@ -1,5 +1,6 @@
 import { DEFAULT_SHOP_STATE, ShopView, catalogQueries, toProductQuery } from "@/features/catalog";
 import { getQueryClient } from "@/lib/query-client";
+import { revalidateOnPathChange } from "@/lib/revalidate";
 import { breadcrumbJsonLd, pageMeta } from "@/lib/seo";
 
 import type { Route } from "./+types/shop";
@@ -23,6 +24,7 @@ async function loadShop() {
 
 export const loader = loadShop;
 export const clientLoader = loadShop;
+export const shouldRevalidate = revalidateOnPathChange;
 
 export const meta: Route.MetaFunction = () =>
   pageMeta({

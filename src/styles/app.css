@@ -257,6 +257,21 @@
   }
 }
 
+/* A page with a print area (the order receipt, ORD-04) prints only that, without site chrome. */
+@media print {
+  body:has([data-print-area]) * {
+    visibility: hidden;
+  }
+  body:has([data-print-area]) [data-print-area],
+  body:has([data-print-area]) [data-print-area] * {
+    visibility: visible;
+  }
+  body:has([data-print-area]) [data-print-area] {
+    position: absolute;
+    inset: 0 0 auto;
+  }
+}
+
 /* Reduced motion (§12, rule 1): everything is instant. */
 @media (prefers-reduced-motion: reduce) {
   *,

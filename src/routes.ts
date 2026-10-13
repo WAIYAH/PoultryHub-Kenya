@@ -18,8 +18,8 @@ export default [
     route("products/:productSlug", "routes/public/product.tsx"),
     page("search", "search"),
     route("cart", "routes/public/cart.tsx"),
-    page("orders/:orderNumber", "order"),
-    page("track-order", "track-order"),
+    route("orders/:orderNumber", "routes/public/order.tsx"),
+    route("track-order", "routes/public/track-order.tsx"),
     page("about", "about"),
     page("services", "services"),
     page("contact", "contact"),
@@ -52,7 +52,7 @@ export default [
     route("*", "routes/system/not-found.tsx"),
   ]),
 
-  layout("layouts/checkout-layout.tsx", [page("checkout", "checkout")]),
+  layout("layouts/checkout-layout.tsx", [route("checkout", "routes/public/checkout.tsx")]),
 
   ...prefix("admin", [
     layout("layouts/admin-layout.tsx", [
