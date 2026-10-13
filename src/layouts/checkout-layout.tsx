@@ -2,6 +2,7 @@ import { ArrowLeft, LockKeyhole } from "lucide-react";
 import { Link, Outlet } from "react-router";
 
 import { Logo } from "@/components/layout/logo";
+import { OfflineBanner } from "@/components/layout/offline-banner";
 import { SkipLink } from "@/components/layout/skip-link";
 import { Container } from "@/components/shared/container";
 import { DemoModeBanner } from "@/components/shared/demo-mode-banner";
@@ -14,6 +15,7 @@ export default function CheckoutLayout() {
   return (
     <>
       <SkipLink />
+      <OfflineBanner />
       {isDemo ? <DemoModeBanner /> : null}
       <header className="border-b border-line bg-white">
         <Container className="flex h-16 items-center justify-between gap-3">

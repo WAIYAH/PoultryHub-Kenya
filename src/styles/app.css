@@ -190,6 +190,8 @@
   }
   body {
     @apply bg-background font-sans text-foreground antialiased;
+    /* Room for a sticky bottom bar (product buy bar) so it never covers the page's end. */
+    padding-bottom: var(--sticky-bar-height, 0px);
   }
   :focus-visible {
     outline: 2px solid var(--color-ring);

@@ -1,34 +1,48 @@
-import { ShoppingBag } from "lucide-react";
-import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { Fragment } from "react";
 import { Link, data, isRouteErrorResponse } from "react-router";
-import { notifySuccess } from "@/lib/notify";
 
 import { Container } from "@/components/shared/container";
-import { PageHeader } from "@/components/shared/page-header";
-import { PlaceholderNotice } from "@/components/shared/placeholder-notice";
-import { PriceDisplay } from "@/components/shared/price-display";
-import { QuantitySelector } from "@/components/shared/quantity-selector";
-import { ResponsiveImage } from "@/components/shared/responsive-image";
-import { StockBadge } from "@/components/shared/stock-badge";
 import { Button } from "@/components/ui/button";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { Skeleton } from "@/components/ui/skeleton";
-import { clampQuantity, formatQuantity, type QuantityRule } from "@/domain/units";
-import { useCartStore } from "@/features/cart";
-import { absoluteUrl, pageMeta } from "@/lib/seo";
-import { cn } from "@/lib/utils";
+import {
+  ProductDetails,
+  ProductGallery,
+  ProductGrid,
+  ProductPurchase,
+  catalogQueries,
+  productJsonLd,
+} from "@/features/catalog";
+import { getQueryClient } from "@/lib/query-client";
+import { breadcrumbJsonLd, pageMeta } from "@/lib/seo";
 import { getServices } from "@/services";
-import type { ProductDetail, ProductVariant } from "@/types/domain";
 
 import type { Route } from "./+types/product";
 
-// Spike S1 (ARCHITECTURE.md §14.2): `loader` runs at build time for pre-rendered slugs;
-// `clientLoader` serves client navigations and slugs that weren't pre-rendered (SPA fallback).
-// The full product page (gallery, delivery info, related products) is built in Phase 2.
+// Product details (CAT-05). Pre-rendered for every active product at build time; products
+// published after the build load through the SPA fallback and clientLoader (spike S1). Price and
+// stock revalidate in the browser; delivery and FAQ content comes with the page.
 
 async function loadProduct(slug: string) {
-  const product = await getServices().catalog.getProduct(slug);
+  const queryClient = getQueryClient();
+  const product = await queryClient.ensureQueryData(catalogQueries.product(slug));
   if (!product) throw data(null, { status: 404, statusText: "Product not found" });
-  return { product };
+  const { content, delivery } = getServices();
+  const [related, zones, pickups, faqs] = await Promise.all([
+    queryClient.ensureQueryData(catalogQueries.related(product.id)),
+    delivery.listZones(),
+    delivery.listPickupLocations(),
+    content.listFaqs({ topic: "products" }),
+  ]);
+  return { product, related, zones, pickups, faqs, loadedAt: Date.now() };
 }
 
 export async function loader({ params }: Route.LoaderArgs) {
@@ -42,38 +56,26 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
 export function HydrateFallback() {
   return (
     <Container className="grid gap-10 py-10 lg:grid-cols-2" aria-busy="true">
-      <Skeleton className="aspect-square w-full rounded-lg" />
+      <Skeleton className="aspect-square w-full rounded-xl" />
       <div className="flex flex-col gap-4">
+        <Skeleton className="h-4 w-24" />
         <Skeleton className="h-10 w-3/4" />
         <Skeleton className="h-6 w-1/3" />
         <Skeleton className="h-24 w-full" />
+        <Skeleton className="h-12 w-48 rounded-full" />
       </div>
       <span className="sr-only">Loading product…</span>
     </Container>
   );
 }
 
-function productJsonLd(product: ProductDetail) {
-  return {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    name: product.name,
-    description: product.shortDescription,
-    category: product.category.name,
-    ...(product.image ? { image: [absoluteUrl(product.image.src)] } : {}),
-    offers: product.variants.map((variant) => ({
-      "@type": "Offer",
-      name: variant.name,
-      sku: variant.sku,
-      price: (variant.priceMinor / 100).toFixed(2),
-      priceCurrency: "KES",
-      availability:
-        !variant.trackInventory || variant.stockQuantity > 0
-          ? "https://schema.org/InStock"
-          : "https://schema.org/OutOfStock",
-      url: absoluteUrl(`/products/${product.slug}`),
-    })),
-  };
+function crumbsFor(product: { name: string; category: { name: string; slug: string } }) {
+  return [
+    { label: "Home", href: "/" },
+    { label: "Shop", href: "/shop" },
+    { label: product.category.name, href: `/shop/${product.category.slug}` },
+    { label: product.name },
+  ];
 }
 
 export const meta: Route.MetaFunction = ({ loaderData, location }) => {
@@ -86,167 +88,85 @@ export const meta: Route.MetaFunction = ({ loaderData, location }) => {
     });
   }
   const { product } = loaderData;
+  const path = `/products/${product.slug}`;
   return pageMeta({
     title: product.name,
     description: product.shortDescription,
-    path: `/products/${product.slug}`,
+    path,
     type: "product",
-    image: product.image ? { url: product.image.src, alt: product.image.alt } : null,
-    jsonLd: productJsonLd(product),
+    image: product.image
+      ? { url: product.image.jpegSrc ?? product.image.src, alt: product.image.alt }
+      : undefined,
+    jsonLd: [productJsonLd(product), breadcrumbJsonLd(crumbsFor(product), path)],
   });
 };
 
-function quantityRule(variant: ProductVariant): QuantityRule {
-  return {
-    min: variant.minOrderQty,
-    step: variant.orderStep,
-    max: variant.maxOrderQty,
-    available: variant.trackInventory ? variant.stockQuantity : null,
-  };
-}
-
 export default function ProductRoute({ loaderData }: Route.ComponentProps) {
-  const { product } = loaderData;
-  const initialVariant = product.variants.find((v) => v.isDefault) ?? product.variants[0];
-  const [variantId, setVariantId] = useState(initialVariant?.id);
-  const variant = product.variants.find((v) => v.id === variantId) ?? initialVariant;
-  const [quantity, setQuantity] = useState(initialVariant?.minOrderQty ?? 1);
-  const addItem = useCartStore((state) => state.addItem);
-
-  if (!variant) return null;
-  const rule = quantityRule(variant);
-  const orderable =
-    product.purchaseMode === "cart" && clampQuantity(variant.minOrderQty, rule) !== null;
-
-  function selectVariant(next: ProductVariant) {
-    setVariantId(next.id);
-    setQuantity(next.minOrderQty);
-  }
-
-  function addToCart() {
-    if (!variant || !orderable) return;
-    addItem({
-      variantId: variant.id,
-      quantity,
-      snapshot: {
-        productSlug: product.slug,
-        productName: product.name,
-        variantName: variant.name,
-        unit: variant.unit,
-        unitPriceMinor: variant.priceMinor,
-        imageSrc: product.image?.src ?? null,
-      },
-    });
-    notifySuccess(
-      `Added ${formatQuantity(quantity, variant.unit)} of ${product.name} to your cart`,
-    );
-  }
+  const { zones, pickups, faqs, loadedAt } = loaderData;
+  // Pre-rendered prices and stock are a starting point only; refetch once the page is live.
+  const { data: fresh } = useQuery({
+    ...catalogQueries.product(loaderData.product.slug),
+    initialData: loaderData.product,
+    initialDataUpdatedAt: loadedAt,
+  });
+  const product = fresh ?? loaderData.product;
+  const { data: related } = useQuery({
+    ...catalogQueries.related(product.id),
+    initialData: loaderData.related,
+    initialDataUpdatedAt: loadedAt,
+  });
+  const crumbs = crumbsFor(product);
 
   return (
     <>
-      <PageHeader
-        title={product.name}
-        description={product.shortDescription}
-        crumbs={[
-          { label: "Home", href: "/" },
-          { label: "Shop", href: "/shop" },
-          { label: product.category.name, href: `/shop/${product.category.slug}` },
-          { label: product.name },
-        ]}
-      />
-      <Container className="grid gap-10 py-10 lg:grid-cols-2 lg:gap-14">
-        <ResponsiveImage
-          src={product.image?.src}
-          alt={product.image?.alt ?? product.name}
-          width={800}
-          height={800}
-          priority
-          className="rounded-lg"
-        />
-        <div className="flex flex-col gap-6">
-          <div className="flex flex-wrap items-center gap-3">
-            <StockBadge availability={product.availability} availableFrom={variant.availableFrom} />
-            {product.collectionOnly ? (
-              <span className="text-sm font-medium text-ink-600">Pick-up only</span>
-            ) : null}
-          </div>
-          <PriceDisplay
-            priceMinor={variant.priceMinor}
-            unit={variant.unit}
-            compareAtMinor={variant.compareAtPriceMinor}
-            size="lg"
-          />
-
-          {product.variants.length > 1 ? (
-            <fieldset className="flex flex-col gap-2">
-              <legend className="mb-2 text-sm font-medium text-ink-900">Choose an option</legend>
-              <div className="flex flex-wrap gap-2">
-                {product.variants.map((option) => (
-                  <label
-                    key={option.id}
-                    className={cn(
-                      "inline-flex min-h-11 cursor-pointer items-center rounded-full border px-4 text-sm font-semibold transition-colors focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
-                      option.id === variant.id
-                        ? "border-forest-900 bg-forest-900 text-white"
-                        : "border-ink-400 bg-white text-ink-900 hover:bg-forest-50",
-                    )}
-                  >
-                    <input
-                      type="radio"
-                      name="variant"
-                      value={option.id}
-                      checked={option.id === variant.id}
-                      onChange={() => selectVariant(option)}
-                      className="sr-only"
-                    />
-                    {option.name}
-                  </label>
-                ))}
-              </div>
-            </fieldset>
-          ) : null}
-
-          {orderable ? (
-            <div className="flex flex-col gap-4">
-              <QuantitySelector
-                value={quantity}
-                onChange={setQuantity}
-                rule={rule}
-                unit={variant.unit}
-              />
-              <Button
-                size="lg"
-                className="w-full sm:w-fit"
-                onClick={addToCart}
-                data-testid="add-to-cart"
-              >
-                <ShoppingBag aria-hidden="true" /> Add to cart
-              </Button>
-            </div>
-          ) : null}
-
-          <div className="flex flex-col gap-3 text-ink-700">
-            <h2 className="text-h3 text-ink-900">About this product</h2>
-            <p>{product.description}</p>
-          </div>
-
-          {product.specifications.length > 0 ? (
-            <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 rounded-lg bg-white p-5 text-sm shadow-card">
-              {product.specifications.map((spec) => (
-                <div key={spec.label} className="contents">
-                  <dt className="font-semibold text-ink-900">{spec.label}</dt>
-                  <dd className="text-ink-700">{spec.value}</dd>
-                </div>
-              ))}
-            </dl>
-          ) : null}
-
-          <PlaceholderNotice
-            phase={2}
-            summary="Gallery, delivery details, FAQs and related products are added in Phase 2."
-          />
-        </div>
+      <Container className="pt-6">
+        <Breadcrumb>
+          <BreadcrumbList>
+            {crumbs.map((crumb, index) => (
+              <Fragment key={crumb.label}>
+                {index > 0 ? <BreadcrumbSeparator /> : null}
+                <BreadcrumbItem>
+                  {crumb.href ? (
+                    <BreadcrumbLink asChild>
+                      <Link to={crumb.href}>{crumb.label}</Link>
+                    </BreadcrumbLink>
+                  ) : (
+                    <BreadcrumbPage className="line-clamp-1">{crumb.label}</BreadcrumbPage>
+                  )}
+                </BreadcrumbItem>
+              </Fragment>
+            ))}
+          </BreadcrumbList>
+        </Breadcrumb>
       </Container>
+
+      <Container className="grid gap-8 py-6 sm:py-8 lg:grid-cols-2 lg:gap-14">
+        <ProductGallery key={product.id} images={product.images} productName={product.name} />
+        <ProductPurchase key={product.slug} product={product} zones={zones} />
+      </Container>
+
+      <Container className="py-12 sm:py-16">
+        <ProductDetails product={product} zones={zones} pickups={pickups} faqs={faqs} />
+      </Container>
+
+      {related.length > 0 ? (
+        <section aria-labelledby="related-heading" className="bg-forest-50 py-12 sm:py-16">
+          <Container className="flex flex-col gap-8">
+            <div className="flex flex-wrap items-end justify-between gap-3">
+              <h2 id="related-heading" className="text-h2 text-ink-900">
+                More {product.category.name.toLowerCase()}
+              </h2>
+              <Link
+                to={`/shop/${product.category.slug}`}
+                className="text-sm font-semibold text-forest-700 underline-offset-4 hover:underline"
+              >
+                View all {product.category.name.toLowerCase()}
+              </Link>
+            </div>
+            <ProductGrid products={related} />
+          </Container>
+        </section>
+      ) : null}
     </>
   );
 }

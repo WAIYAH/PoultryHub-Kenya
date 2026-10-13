@@ -13,11 +13,11 @@ const includeDesignSystem = process.env.VITE_APP_ENV !== "production";
 export default [
   layout("layouts/public-layout.tsx", [
     index("routes/public/home.tsx"),
-    page("shop", "shop"),
-    page("shop/:categorySlug", "category"),
+    route("shop", "routes/public/shop.tsx"),
+    route("shop/:categorySlug", "routes/public/category.tsx"),
     route("products/:productSlug", "routes/public/product.tsx"),
     page("search", "search"),
-    page("cart", "cart"),
+    route("cart", "routes/public/cart.tsx"),
     page("orders/:orderNumber", "order"),
     page("track-order", "track-order"),
     page("about", "about"),

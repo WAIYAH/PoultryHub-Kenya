@@ -3,6 +3,7 @@ import { Outlet } from "react-router";
 
 import { AnnouncementBar } from "@/components/layout/announcement-bar";
 import { FloatingWhatsApp } from "@/components/layout/floating-whatsapp";
+import { OfflineBanner } from "@/components/layout/offline-banner";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SkipLink } from "@/components/layout/skip-link";
@@ -24,6 +25,7 @@ export default function PublicLayout() {
   return (
     <>
       <SkipLink />
+      <OfflineBanner />
       {IS_DEMO ? <DemoModeBanner /> : null}
       {settings.announcement ? (
         <AnnouncementBar id={settings.announcement.id} message={settings.announcement.message} />

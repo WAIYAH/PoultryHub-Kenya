@@ -14,7 +14,7 @@ import { errorMessage } from "@/lib/errors";
 
 import { setCartDrawerOpen, useCartUi } from "../cart-ui.store";
 import { useCartStore } from "../cart.store";
-import { useCartQuote } from "../use-cart-quote";
+import { hasBlockingLineIssues, useCartQuote } from "../use-cart-quote";
 
 import { CartEmpty } from "./cart-empty";
 import { CartLineItem } from "./cart-line-item";
@@ -29,9 +29,7 @@ export default function CartDrawer() {
   const lines = useCartStore((state) => state.lines);
   const quote = useCartQuote();
   const close = () => setCartDrawerOpen(false);
-  const hasBlockingIssue = quote.data?.lines.some((line) =>
-    line.issues.some((issue) => issue.code !== "COLLECTION_ONLY"),
-  );
+  const hasBlockingIssue = hasBlockingLineIssues(quote.data);
 
   return (
     <Sheet open={open} onOpenChange={setCartDrawerOpen}>
