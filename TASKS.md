@@ -27,7 +27,7 @@
 - [x] **P1-06** Linting and formatting. ESLint **10** flat config (ADR-003 revised, because npm marks ESLint 9 unsupported), with typed typescript-eslint, react-hooks 7 (React Compiler rules), jsx-a11y and the layering rules. Prettier with the Tailwind plugin
 - [x] **P1-07** Vitest 5 (separate config) with Testing Library and jsdom: 12 files, 90 tests
 - [x] **P1-08** Playwright 1.64 + axe. `mobile-360` and `desktop-chrome` run by default; `E2E_FULL_MATRIX=1` adds WebKit, Firefox and tablet. 154 tests (152 passed, 2 skipped by design)
-- [x] **P1-09** `.github/workflows/ci.yml`: quality job (lint, format, types, tests, build, bundle budget, secret scan) and E2E job. **Not yet run on GitHub**, because pushing waits for your go-ahead (D6)
+- [x] **P1-09** `.github/workflows/ci.yml`: quality job (lint, format, types, tests, build, bundle budget, secret scan) and E2E job. **Green on GitHub** (PR #2): quality 35 s, E2E 1 min 18 s on Linux Chromium. The first run caught lint depending on locally generated route types; fixed with a `typegen` step before `lint` and `typecheck`
 
 **Design system**
 - [x] **P1-10** Tailwind 4 tokens with the default palette disabled. Base layer covers typography utilities, the focus ring (gold on dark surfaces) and reduced motion
