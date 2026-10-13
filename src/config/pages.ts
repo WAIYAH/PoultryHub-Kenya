@@ -29,28 +29,6 @@ export const pageRegistry = {
     summary: "M-Pesa and other payment options.",
     phase: 2,
   },
-  "auth-sign-in": { title: "Sign in", summary: "Sign in to your account.", phase: 2 },
-  "auth-sign-up": {
-    title: "Create an account",
-    summary: "Register to track orders faster.",
-    phase: 2,
-  },
-  "auth-forgot-password": {
-    title: "Forgot password",
-    summary: "Get a password reset link.",
-    phase: 2,
-  },
-  "auth-reset-password": { title: "Reset password", summary: "Choose a new password.", phase: 2 },
-  "auth-callback": { title: "Signing you in", summary: "Completing sign-in.", phase: 3 },
-  account: { title: "My account", summary: "Recent orders and quick actions.", phase: 2 },
-  "account-orders": { title: "My orders", summary: "Order history.", phase: 2 },
-  "account-profile": { title: "Profile", summary: "Name, phone and preferences.", phase: 2 },
-  "account-addresses": { title: "Addresses", summary: "Saved delivery addresses.", phase: 2 },
-  "account-security": {
-    title: "Security",
-    summary: "Password and sign-out from all devices.",
-    phase: 2,
-  },
   "admin-overview": {
     title: "Overview",
     summary: "Sales, orders and stock at a glance.",

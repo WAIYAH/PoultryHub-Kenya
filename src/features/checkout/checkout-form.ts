@@ -1,7 +1,9 @@
 import { z } from "zod/mini";
 
+import { isEmail } from "@/domain/email";
 import { normalizeKenyanMobile } from "@/domain/phone";
 import type {
+  Address,
   CartItemInput,
   FulfilmentMethod,
   MinorUnits,
@@ -69,8 +71,6 @@ export function fieldId(field: CheckoutField): string {
   return `checkout-${field}`;
 }
 
-const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
 const text = (max: number) =>
   z.string().check(z.trim(), z.maxLength(max, `Keep this under ${max} characters.`));
 
@@ -94,7 +94,7 @@ export const checkoutSchema = z
     email: z.string().check(
       z.trim(),
       z.refine(
-        (value) => value === "" || EMAIL.test(value),
+        (value) => value === "" || isEmail(value),
         "Enter a valid email address, or leave it blank.",
       ),
     ),
@@ -198,4 +198,17 @@ export function serverFieldErrors(fields: unknown): Partial<Record<CheckoutField
     if (field && typeof message === "string") result[field] = message;
   }
   return result;
+}
+
+/** The delivery fields a saved address fills in (CHK-01). */
+export function addressFields(
+  address: Pick<Address, "county" | "deliveryAreaId" | "town" | "addressLine" | "directions">,
+): Pick<CheckoutValues, "county" | "deliveryAreaId" | "town" | "addressLine" | "directions"> {
+  return {
+    county: address.county,
+    deliveryAreaId: address.deliveryAreaId ?? "",
+    town: address.town,
+    addressLine: address.addressLine,
+    directions: address.directions ?? "",
+  };
 }

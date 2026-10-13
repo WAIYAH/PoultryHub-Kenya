@@ -20,6 +20,7 @@ import type { OrderDetail, OrderRef } from "@/types/domain";
 import { orderKeys, orderQueries } from "../queries";
 
 import { CancelOrderButton } from "./cancel-order-button";
+import { OrderAgainButton } from "./order-again-button";
 import { MpesaPaymentPanel } from "./mpesa-payment-panel";
 import { OrderFulfilmentCard } from "./order-fulfilment-card";
 import { OrderItemsCard } from "./order-items-card";
@@ -231,7 +232,9 @@ function OrderView({ order, orderRef }: { order: OrderDetail; orderRef: OrderRef
               </Button>
               {isCustomerCancellable(order.status) ? (
                 <CancelOrderButton orderRef={orderRef} onCancelled={reload} />
-              ) : null}
+              ) : (
+                <OrderAgainButton items={order.items} />
+              )}
             </div>
           </section>
         </div>

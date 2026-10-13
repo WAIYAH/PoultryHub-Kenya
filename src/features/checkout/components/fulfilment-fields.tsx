@@ -3,9 +3,9 @@ import { useFormContext, useWatch } from "react-hook-form";
 
 import { formatKES } from "@/domain/money";
 import { AreaSelector, etaText } from "@/features/delivery";
-import type { CartQuote, DeliveryArea, PickupLocation, QuoteIssue } from "@/types/domain";
+import type { Address, CartQuote, DeliveryArea, PickupLocation, QuoteIssue } from "@/types/domain";
 
-import { fieldId, type CheckoutValues } from "../checkout-form";
+import { addressFields, fieldId, type CheckoutValues } from "../checkout-form";
 
 import { ChoiceCard, ChoiceGroup } from "./choice-cards";
 import { TextAreaField, TextField } from "./text-field";
@@ -20,12 +20,15 @@ export function FulfilmentFields({
   pickups,
   quote,
   collectionOnly,
+  savedAddresses = [],
 }: {
   areas: DeliveryArea[];
   pickups: PickupLocation[];
   quote: CartQuote | undefined;
   /** Some item can only be collected (BR-14). */
   collectionOnly: boolean;
+  /** A signed-in customer's saved addresses (CHK-01). */
+  savedAddresses?: Address[];
 }) {
   const {
     control,
@@ -48,6 +51,21 @@ export function FulfilmentFields({
     // The area is usually the town; prefill it unless the customer typed something else.
     const town = getValues("town").trim();
     if (next && (town === "" || town === previous?.name)) set("town", next.name);
+  }
+
+  // Only saved addresses in an area we still serve can fill the delivery fields.
+  const usableAddresses = savedAddresses.filter((address) =>
+    areas.some((area) => area.id === address.deliveryAreaId),
+  );
+  function applySavedAddress(id: string) {
+    const address = usableAddresses.find((a) => a.id === id);
+    if (!address) return;
+    for (const [name, value] of Object.entries(addressFields(address))) {
+      setValue(name as keyof CheckoutValues, value as never, {
+        shouldDirty: true,
+        shouldValidate: isSubmitted,
+      });
+    }
   }
 
   const minimum = quote?.issues.find(
@@ -97,6 +115,26 @@ export function FulfilmentFields({
 
       {fulfilment === "delivery" ? (
         <div className="flex flex-col gap-5" data-testid="delivery-fields">
+          {usableAddresses.length > 0 ? (
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="checkout-saved-address" className="text-sm font-medium text-ink-900">
+                Use a saved address
+              </label>
+              <select
+                id="checkout-saved-address"
+                value=""
+                onChange={(event) => applySavedAddress(event.target.value)}
+                className="h-11 w-full rounded-md border border-input bg-white px-3 text-base text-ink-900 focus-visible:border-ring"
+              >
+                <option value="">Choose one of your addresses</option>
+                {usableAddresses.map((address) => (
+                  <option key={address.id} value={address.id}>
+                    {address.label}: {address.addressLine}, {address.town}
+                  </option>
+                ))}
+              </select>
+            </div>
+          ) : null}
           <AreaSelector
             areas={areas}
             county={county}

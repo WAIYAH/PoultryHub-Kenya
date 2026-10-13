@@ -90,7 +90,7 @@ export function toOrderDetail(order: DemoOrder, ref: OrderRef): OrderDetail {
     customerName: order.customer.name,
     customerPhone: order.customer.phone,
     customerEmail: order.customer.email,
-    items: order.items.map(({ variantId: _variantId, ...item }) => item),
+    items: order.items.map((item) => ({ ...item })),
     subtotalMinor: order.subtotalMinor,
     discountMinor: order.discountMinor,
     deliveryFeeMinor: order.deliveryFeeMinor,

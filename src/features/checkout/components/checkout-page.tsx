@@ -9,7 +9,10 @@ import { Container } from "@/components/shared/container";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatKES } from "@/domain/money";
+import { formatKenyanMobile } from "@/domain/phone";
 import { paymentMethodAvailability } from "@/domain/payment-methods";
+import { accountQueries } from "@/features/account";
+import { useSession } from "@/features/auth";
 import { CartEmpty, cartKeys, useCartQuote, useCartReady, useCartStore } from "@/features/cart";
 import { useSiteSettings } from "@/features/content";
 import { deliveryQueries } from "@/features/delivery";
@@ -20,6 +23,7 @@ import type { CartQuote } from "@/types/domain";
 import { clearCheckoutDraft, readCheckoutDraft, writeCheckoutDraft } from "../checkout-draft";
 import {
   EMPTY_CHECKOUT,
+  addressFields,
   checkoutSchema,
   fieldId,
   toPlaceOrderInput,
@@ -128,6 +132,10 @@ function CheckoutForm() {
 
   const areas = useQuery(deliveryQueries.areas());
   const pickups = useQuery(deliveryQueries.pickups());
+  const session = useSession();
+  const signedIn = session.status === "ready" && session.session !== null;
+  const profile = useQuery({ ...accountQueries.profile(), enabled: signedIn });
+  const savedAddresses = useQuery({ ...accountQueries.addresses(), enabled: signedIn });
   const quote = useCartQuote({
     fulfilment,
     deliveryAreaId: fulfilment === "delivery" ? deliveryAreaId || null : null,
@@ -167,6 +175,29 @@ function CheckoutForm() {
       if (!getValues("town")) setValue("town", area.name);
     }
   }, [areas.data, savedAreaId, getValues, setValue]);
+
+  // CHK-01: signed-in customers start from their profile and default address. Nothing the
+  // customer typed (or kept in the draft) is overwritten.
+  const accountPrefilled = useRef(false);
+  useEffect(() => {
+    if (accountPrefilled.current || !profile.data || !savedAddresses.data || !areas.data) return;
+    accountPrefilled.current = true;
+    const fill = (name: CheckoutField, value: string) => {
+      if (value && !getValues(name).trim()) setValue(name, value as never);
+    };
+    fill("name", profile.data.fullName);
+    fill("phone", profile.data.phone ? formatKenyanMobile(profile.data.phone) : "");
+    fill("email", profile.data.email);
+    const address = savedAddresses.data.find(
+      (a) => a.isDefault && areas.data.some((area) => area.id === a.deliveryAreaId),
+    );
+    const area = getValues("deliveryAreaId");
+    if (address && !getValues("addressLine").trim() && (!area || area === address.deliveryAreaId)) {
+      for (const [name, value] of Object.entries(addressFields(address))) {
+        setValue(name as CheckoutField, value as never);
+      }
+    }
+  }, [profile.data, savedAddresses.data, areas.data, getValues, setValue]);
 
   // BR-14: an order with a pick-up-only item can't be delivered.
   useEffect(() => {
@@ -350,6 +381,7 @@ function CheckoutForm() {
                       pickups={pickups.data}
                       quote={quote.data}
                       collectionOnly={collectionOnly}
+                      savedAddresses={savedAddresses.data}
                     />
                   ) : areas.isError || pickups.isError ? (
                     <div

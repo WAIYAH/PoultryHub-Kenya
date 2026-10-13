@@ -26,7 +26,7 @@ export default function PlaceholderRoute() {
   const id = useMatches().at(-1)?.id ?? "";
   const info = getPageInfo(id) ?? UNKNOWN;
 
-  if (id.startsWith("admin-") || id.startsWith("account")) {
+  if (id.startsWith("admin-")) {
     return (
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-2">

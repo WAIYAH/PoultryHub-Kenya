@@ -1,7 +1,11 @@
-import { NavLink, Outlet } from "react-router";
+import { NavLink, Outlet, redirect } from "react-router";
 
 import { Container } from "@/components/shared/container";
+import { signInPath } from "@/features/auth";
 import { cn } from "@/lib/utils";
+import { getServices } from "@/services";
+
+import type { Route } from "./+types/account-layout";
 
 const accountNav = [
   { label: "Overview", href: "/account", end: true },
@@ -11,7 +15,20 @@ const accountNav = [
   { label: "Security", href: "/account/security" },
 ];
 
-/** Account area tabs (FR-ACC). Sign-in protection is added with authentication in Phase 2–3. */
+/**
+ * Signed-out visitors go to sign-in and come back here afterwards (ARCHITECTURE.md §7.7). This
+ * only steers the UI: the data source refuses another customer's data either way (RLS, Phase 3).
+ */
+export async function clientLoader({ request }: Route.ClientLoaderArgs) {
+  const session = await getServices().auth.getSession();
+  if (!session) {
+    const url = new URL(request.url);
+    throw redirect(signInPath(`${url.pathname}${url.search}`));
+  }
+  return null;
+}
+
+/** Account area tabs (FR-ACC). */
 export default function AccountLayout() {
   return (
     <Container className="flex flex-col gap-8 py-10 lg:flex-row lg:gap-12">
