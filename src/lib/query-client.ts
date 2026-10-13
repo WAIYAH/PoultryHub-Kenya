@@ -18,3 +18,16 @@ export function createQueryClient() {
     },
   });
 }
+
+let browserClient: QueryClient | undefined;
+
+/**
+ * One client per browser tab, shared by components and route `clientLoader`s (which prefetch into
+ * it, so a page renders from cache without a second request). During pre-rendering every call gets
+ * a fresh client, so nothing leaks between pages.
+ */
+export function getQueryClient(): QueryClient {
+  if (typeof window === "undefined") return createQueryClient();
+  browserClient ??= createQueryClient();
+  return browserClient;
+}

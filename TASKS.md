@@ -55,26 +55,26 @@
 ## Phase 2: Customer-facing frontend on mock data 🔒
 
 **Data**
-- [ ] **P2-01** Typed fixtures, all marked `SAMPLE`: categories; about 20 products across every type (variants, units, MOQ, step, availability); zones, areas and pick-up points; settings; content blocks; FAQs; testimonials (empty by default); blog posts; example orders
-- [ ] **P2-02** Mock services: simulated latency, errors and empty results (`?mock=`); stock-aware cart quote; demo order placement; demo payment state machine; mock auth with demo accounts
-- [ ] **P2-03** Source illustrative images (licensed, recorded in `public/images/CREDITS.md`) and generate responsive variants of static assets
+- [x] **P2-01** Typed fixtures, all marked `SAMPLE`: 4 categories; 20 products across every type (variants, units, MOQ, step, pre-order batches, enquiry-only, pick-up-only, Swahili keywords); 3 zones, 17 areas and 2 pick-up points; settings; content blocks; 12 FAQs; testimonials (empty by default); 5 blog posts; 4 policy templates; 3 promo codes; a demo account with 3 example orders
+- [x] **P2-02** Mock services for all nine contracts, each loaded on first use (`src/services/lazy.ts`) so fixtures stay out of initial bundles. Fixed 250 ms latency; `?mock=slow|empty|error` plus checkout scenarios `price-changed|low-stock|area-closed`; stock-aware quote with promos and zone fees; idempotent order placement with every recovery error; hold expiry; demo M-Pesa state machine; mock auth with email-link codes. Demo writes persist in `localStorage` (`phk-demo-state`). 47 tests named by rule ID
+- [x] **P2-03** 12 illustrative photos, CC0 or Public Domain Mark only, each licence checked at the source; 3 are from Kenya. No identifiable people, no cages. `pnpm images` (sharp) downloads sources from `scripts/images/manifest.mjs`, writes 480/960 WebP crops, an AVIF art-directed hero and JPEGs for link previews, and generates `public/images/CREDITS.md` and the typed rendition list. Cards ≤ 40 KB at 480 px; desktop hero 62 KB AVIF
 
 **Pages & features**
-- [ ] **P2-04** Home: every section in [DESIGN_SYSTEM §10.1](DESIGN_SYSTEM.md#101-home-page-blueprint)
-- [ ] **P2-05** Shop and category pages: grid, filters (a sheet on mobile), search, sort, pagination, URL state, removable filter chips
-- [ ] **P2-06** Product details: gallery, variant picker, quantity rules, sticky mobile buy bar, specifications, delivery info, related products, WhatsApp enquiry
-- [ ] **P2-07** Cart: drawer and page, quantity rules, price-change notices, delivery estimate, promo field, "Order again"
-- [ ] **P2-08** Checkout: sections; Kenyan phone and address model; fulfilment and payment rules; draft persistence; error summary; idempotent submit; recovery screens (`PRICE_CHANGED`, `INSUFFICIENT_STOCK`, `AREA_NOT_SERVED`)
-- [ ] **P2-09** Order page: confirmation, demo M-Pesa panel states, timeline, printable receipt. Track Order page
+- [x] **P2-04** Home: every section in [DESIGN_SYSTEM §10.1](DESIGN_SYSTEM.md#101-home-page-blueprint). Content from the build-time loader; category prices and featured products revalidate in the browser. Testimonials are hidden while none are published (their carousel loads on demand)
+- [x] **P2-05** Shop and category pages: grid, filters (sidebar on desktop, a lazy sheet on mobile), search, sort, numbered pagination, removable filter chips. Filters live in the URL (unit-tested); pre-rendered pages show the unfiltered view until hydration. Loading, empty and error states
+- [x] **P2-06** Product details: gallery, variant picker, quantity rules (BR-06), sticky mobile buy bar, specifications, delivery and pick-up info, product FAQs, related products, WhatsApp enquiry; quote requests for enquiry-only products. Product and BreadcrumbList JSON-LD. Price and stock revalidate after hydration; related products load after the buy box
+- [x] **P2-07** Cart: drawer and page, quantity rules, server-checked lines with one-tap fixes (price change, stock, quantity rule, unavailable), delivery estimate by county and area, promo field. Cart store v2 with migration saves the promo code and area. The "Order again" action is in the store; its button ships with the account order pages (P2-10)
+- [x] **P2-08** Checkout: four numbered sections (details, delivery or pick-up, payment, review), with a sticky summary on desktop and a collapsible summary bar on mobile. County → configured area → town (prefilled from the area) → estate, street or building → directions → instructions, or a pick-up point. Pick-up-only items force pick-up (BR-14); only valid payment methods are offered (BR-17). React Hook Form with `zod/mini`: inline errors and a focused error summary that shrinks as fields are fixed. A session draft keeps the form and the idempotency key, which survives a network error and is renewed after a definite rejection. M-Pesa orders send the prompt straight away. Recovery screens for `PRICE_CHANGED`, `INSUFFICIENT_STOCK`/`QUANTITY_RULE`, `AREA_NOT_SERVED` and `TOO_MANY_OPEN_ORDERS`; inline fixes for promo codes and minimum orders. Signed-in prefill arrives with P2-10
+- [x] **P2-09** Order page: confirmation with next steps by payment method; M-Pesa panel (waiting with the hold countdown; cancelled, failed or timed out with retry and a changeable number; paid with the receipt), polling 3 s → 15 s → manual; Paybill instructions and code submission; TEST controls in non-production builds only; timeline, items and totals, delivery or pick-up details, copyable secret link, WhatsApp help, cancel while pending (ORD-02), printable receipt. Without access it shows "not found" (BR-28). Track Order page (pre-rendered): number + phone, status and timeline only. "Order again" moves to P2-10, because order items need their variant id first
 - [ ] **P2-10** Auth screens (sign in, sign up, forgot and reset password, callback) on mock auth. Account overview, orders, profile, addresses, security
 - [ ] **P2-11** About, Services, Contact (validated form, mock submit), FAQ, Blog index and post, Search, Policies (templates marked as drafts)
-- [ ] **P2-12** Announcement bar, floating WhatsApp button (hidden on checkout), footer content
-- [ ] **P2-13** Loading, empty, error, success and offline states on every data view
+- [x] **P2-12** Announcement bar (in the pre-rendered HTML, so no layout shift), floating WhatsApp button (not in checkout or admin; lifts above sticky bars), footer with hours, payment methods and real social links only. Site settings load in the root loader. Without a configured number, demo builds use WhatsApp's share link and real builds hide WhatsApp
+- [ ] **P2-13** Loading, empty, error, success and offline states on every data view. Done so far: offline banner; home, shop, category, product, cart, checkout, order and track order
 - [ ] **P2-14** Motion and micro-interactions per [DESIGN_SYSTEM §12](DESIGN_SYSTEM.md#12-motion-system)
 - [ ] **P2-15** SEO: meta per route, canonical URLs, OG images, JSON-LD (known fields only), sitemap, robots, `noindex` rules
 
 **Verification**
-- [ ] **P2-16** Unit and component tests (TESTING §6.1–6.2). E2E: J1, J4 and J5 (mock), J7, J13, J14, plus the link crawl
+- [ ] **P2-16** Unit and component tests (TESTING §6.1–6.2). E2E: J1, J4 and J5 (mock), J7, J13, J14, plus the link crawl. Done so far: J1, J4, J5 and J7, plus the checkout recovery screens
 - [ ] **P2-17** Lighthouse, axe and responsive screenshots (360–1440 px); fix what they find
 - [ ] **P2-18** Phase 2 summary and demo walkthrough → 🔒 **your approval**
 

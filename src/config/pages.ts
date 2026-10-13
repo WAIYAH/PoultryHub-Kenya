@@ -10,21 +10,7 @@ export interface PageInfo {
 }
 
 export const pageRegistry = {
-  shop: { title: "Shop", summary: "All products with search, filters and sorting.", phase: 2 },
-  category: { title: "Category", summary: "Products in one category.", phase: 2 },
   search: { title: "Search", summary: "Results across products, articles and FAQs.", phase: 2 },
-  cart: { title: "Cart", summary: "Your cart, saved on this device.", phase: 2 },
-  checkout: { title: "Checkout", summary: "Delivery or pick-up, then payment.", phase: 2 },
-  order: {
-    title: "Order status",
-    summary: "Confirmation, payment and tracking for an order.",
-    phase: 2,
-  },
-  "track-order": {
-    title: "Track an order",
-    summary: "Find an order with its number and phone.",
-    phase: 2,
-  },
   about: { title: "About us", summary: "Our story, farming methods and standards.", phase: 2 },
   services: { title: "Services", summary: "Supply, bulk orders and farming guidance.", phase: 2 },
   contact: { title: "Contact us", summary: "Phone, WhatsApp, email and a contact form.", phase: 2 },

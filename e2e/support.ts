@@ -39,10 +39,25 @@ export async function expectNoSeriousA11yViolations(page: Page): Promise<void> {
   ).toEqual([]);
 }
 
-/** No horizontal page scroll (NFR-COMP-2). */
+/**
+ * No horizontal page scroll (NFR-COMP-2). Fixed elements don't widen the document, but one that
+ * pokes past the edge still lets a phone pan sideways, so those are checked too.
+ */
 export async function expectNoHorizontalScroll(page: Page): Promise<void> {
   const overflow = await page.evaluate(
     () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
   );
   expect(overflow).toBeLessThanOrEqual(0);
+  const widerFixed = await page.evaluate(() => {
+    const width = document.documentElement.clientWidth;
+    return [...document.querySelectorAll<HTMLElement>("body *")]
+      .filter((element) => {
+        const style = getComputedStyle(element);
+        if (style.position !== "fixed" || style.visibility === "hidden") return false;
+        const rect = element.getBoundingClientRect();
+        return rect.width > 0 && (rect.right > width + 1 || rect.left < -1);
+      })
+      .map((element) => `${element.tagName.toLowerCase()}[${element.getAttribute("class") ?? ""}]`);
+  });
+  expect(widerFixed).toEqual([]);
 }

@@ -48,6 +48,30 @@ describe("deriveAvailability (CAT-11)", () => {
     ).toBe("pre_order");
   });
 
+  it("is pre-order when a future batch already has capacity to book (D3)", () => {
+    expect(
+      deriveAvailability(
+        {
+          purchaseMode: "cart",
+          variants: [variant({ stockQuantity: 500, availableFrom: "2026-10-24" })],
+        },
+        "2026-10-13",
+      ),
+    ).toBe("pre_order");
+  });
+
+  it("is in stock once the batch date arrives", () => {
+    expect(
+      deriveAvailability(
+        {
+          purchaseMode: "cart",
+          variants: [variant({ stockQuantity: 500, availableFrom: "2026-10-24" })],
+        },
+        "2026-10-24",
+      ),
+    ).toBe("in_stock");
+  });
+
   it("is out of stock when nothing is sellable or scheduled", () => {
     expect(
       deriveAvailability({ purchaseMode: "cart", variants: [variant({ stockQuantity: 0 })] }),

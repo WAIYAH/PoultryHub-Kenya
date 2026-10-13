@@ -13,13 +13,13 @@ const includeDesignSystem = process.env.VITE_APP_ENV !== "production";
 export default [
   layout("layouts/public-layout.tsx", [
     index("routes/public/home.tsx"),
-    page("shop", "shop"),
-    page("shop/:categorySlug", "category"),
+    route("shop", "routes/public/shop.tsx"),
+    route("shop/:categorySlug", "routes/public/category.tsx"),
     route("products/:productSlug", "routes/public/product.tsx"),
     page("search", "search"),
-    page("cart", "cart"),
-    page("orders/:orderNumber", "order"),
-    page("track-order", "track-order"),
+    route("cart", "routes/public/cart.tsx"),
+    route("orders/:orderNumber", "routes/public/order.tsx"),
+    route("track-order", "routes/public/track-order.tsx"),
     page("about", "about"),
     page("services", "services"),
     page("contact", "contact"),
@@ -52,7 +52,7 @@ export default [
     route("*", "routes/system/not-found.tsx"),
   ]),
 
-  layout("layouts/checkout-layout.tsx", [page("checkout", "checkout")]),
+  layout("layouts/checkout-layout.tsx", [route("checkout", "routes/public/checkout.tsx")]),
 
   ...prefix("admin", [
     layout("layouts/admin-layout.tsx", [

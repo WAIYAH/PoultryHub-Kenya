@@ -3,7 +3,7 @@ import { getEnv } from "@/lib/env";
 import type { Services } from "./contracts";
 import { createMockServices } from "./mock";
 
-export type { CatalogService, Services } from "./contracts";
+export type * from "./contracts";
 
 let instance: Services | undefined;
 

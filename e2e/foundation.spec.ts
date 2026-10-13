@@ -169,7 +169,7 @@ test.describe("spike S3: static SEO resources", () => {
     const response = await request.get("/sitemap.xml");
     expect(response.headers()["content-type"]).toContain("application/xml");
     const xml = await response.text();
-    expect(xml.match(/<url>/g)).toHaveLength(20);
+    expect(xml.match(/<url>/g)).toHaveLength(41); // 12 static + 4 categories + 20 products + 5 posts
     expect(xml).toContain("<loc>http://127.0.0.1:4173/products/layers-mash</loc>");
     expect(xml).not.toContain("/admin");
   });

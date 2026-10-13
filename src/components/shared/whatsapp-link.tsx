@@ -1,21 +1,20 @@
 import type { ComponentProps, ReactNode } from "react";
 
-import { whatsappUrl } from "@/domain/whatsapp";
-
-/** wa.me link that renders nothing until the business has configured a WhatsApp number. */
+/**
+ * Opens WhatsApp in a new tab. Renders nothing without a link, so nothing appears until the
+ * business has configured a number (see `businessWhatsappUrl` in src/domain/whatsapp.ts).
+ */
 export function WhatsAppLink({
-  phone,
-  message,
+  href,
   children,
   ...props
 }: Omit<ComponentProps<"a">, "href" | "target" | "rel"> & {
-  phone: string | null;
-  message?: string;
+  href: string | null;
   children: ReactNode;
 }) {
-  if (!phone) return null;
+  if (!href) return null;
   return (
-    <a href={whatsappUrl(phone, message)} target="_blank" rel="noopener noreferrer" {...props}>
+    <a href={href} target="_blank" rel="noopener noreferrer" {...props}>
       {children}
       <span className="sr-only"> (opens WhatsApp)</span>
     </a>

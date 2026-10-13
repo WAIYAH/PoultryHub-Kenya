@@ -10,7 +10,7 @@ type VariantStock = Pick<
 
 export function deriveAvailability(
   product: { purchaseMode: PurchaseMode; variants: readonly VariantStock[] },
-  today: string = new Date().toISOString().slice(0, 10),
+  today: string = todayInEat(),
 ): Availability {
   if (product.purchaseMode === "enquiry") return "enquiry";
   const variants = product.variants;
@@ -18,11 +18,23 @@ export function deriveAvailability(
 
   const sellable = variants.filter((v) => !v.trackInventory || v.stockQuantity > 0);
   if (sellable.length === 0) {
-    const upcoming = variants.some((v) => v.availableFrom !== null && v.availableFrom > today);
+    const upcoming = variants.some((v) => isUpcoming(v, today));
     return upcoming ? "pre_order" : "out_of_stock";
   }
-  const comfortable = sellable.some(
+  // D3: a future batch's capacity is its stock, so it can be booked now ("Ready from …").
+  const readyNow = sellable.filter((v) => !isUpcoming(v, today));
+  if (readyNow.length === 0) return "pre_order";
+  const comfortable = readyNow.some(
     (v) => !v.trackInventory || v.stockQuantity > v.lowStockThreshold,
   );
   return comfortable ? "in_stock" : "low_stock";
+}
+
+function isUpcoming(variant: VariantStock, today: string): boolean {
+  return variant.availableFrom !== null && variant.availableFrom > today;
+}
+
+/** Today's date in East Africa Time (YYYY-MM-DD), the calendar used for batch dates. */
+export function todayInEat(now: number = Date.now()): string {
+  return new Date(now + 3 * 3_600_000).toISOString().slice(0, 10);
 }

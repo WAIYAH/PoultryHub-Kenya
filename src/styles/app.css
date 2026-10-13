@@ -63,6 +63,20 @@
 
   /* Hero entrance runs in CSS so pre-rendered content animates before hydration (§12). */
   --animate-rise-in: rise-in 560ms var(--ease-out-soft) both;
+  /* Cart badge bump when the count changes (§12; a CSS approximation of the spring). */
+  --animate-bump: bump 420ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  @keyframes bump {
+    0% {
+      transform: scale(0.6);
+    }
+    60% {
+      transform: scale(1.18);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
 
   @keyframes rise-in {
     from {
@@ -176,6 +190,8 @@
   }
   body {
     @apply bg-background font-sans text-foreground antialiased;
+    /* Room for a sticky bottom bar (product buy bar) so it never covers the page's end. */
+    padding-bottom: var(--sticky-bar-height, 0px);
   }
   :focus-visible {
     outline: 2px solid var(--color-ring);
@@ -238,6 +254,33 @@
   .reveal[data-reveal] {
     opacity: 1 !important;
     transform: none !important;
+  }
+}
+
+/* Sonner 2.0 gives its mobile toaster a 16px inset on both sides and width: 100%, so it pokes 16px
+   past the right edge and phones let the page pan sideways while a toast shows (NFR-COMP-2). Use
+   the insets alone. Unlayered and more specific than Sonner's runtime-injected rules. */
+@media (max-width: 600px) {
+  [data-sonner-toaster][data-sonner-theme] {
+    width: auto;
+  }
+  [data-sonner-toaster][data-sonner-theme] [data-sonner-toast] {
+    width: 100%;
+  }
+}
+
+/* A page with a print area (the order receipt, ORD-04) prints only that, without site chrome. */
+@media print {
+  body:has([data-print-area]) * {
+    visibility: hidden;
+  }
+  body:has([data-print-area]) [data-print-area],
+  body:has([data-print-area]) [data-print-area] * {
+    visibility: visible;
+  }
+  body:has([data-print-area]) [data-print-area] {
+    position: absolute;
+    inset: 0 0 auto;
   }
 }
 
