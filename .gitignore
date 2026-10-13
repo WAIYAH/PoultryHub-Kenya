@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+
+# Build output and generated types
+/build/
+/.react-router/
+
+# Environment files: never commit real values (the template is the exception)
+.env
+.env.*
+!.env.example
+supabase/functions/.env
+supabase/.temp/
+supabase/.branches/
+
+# Test output
+/coverage/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+# Third-party design reference (repository is public; see PLAN.md decision D2)
+/Reference image.jpeg
+/docs/design/reference*
+
+# Tooling and OS
+.vite/
+*.log
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
