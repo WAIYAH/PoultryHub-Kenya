@@ -37,7 +37,7 @@ export function CartPage() {
     return (
       <>
         <PageHeader title="Your cart" crumbs={CRUMBS} />
-        <Container className="grid gap-6 py-10 lg:grid-cols-[1fr_22rem]" aria-busy="true">
+        <Container className="grid grid-cols-1 gap-6 py-10 lg:grid-cols-[minmax(0,1fr)_22rem]" aria-busy="true">
           <Skeleton className="h-64 w-full rounded-lg" />
           <Skeleton className="h-64 w-full rounded-lg" />
           <span className="sr-only">Loading your cart…</span>
@@ -64,7 +64,7 @@ export function CartPage() {
         description={`${lines.length} ${lines.length === 1 ? "item" : "items"}, saved on this device.`}
         crumbs={CRUMBS}
       />
-      <Container className="grid items-start gap-8 py-8 sm:py-10 lg:grid-cols-[1fr_22rem] lg:gap-10">
+      <Container className="grid grid-cols-1 items-start gap-8 py-8 sm:py-10 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-10">
         <div className="flex flex-col gap-4">
           {quote.isError ? (
             <div

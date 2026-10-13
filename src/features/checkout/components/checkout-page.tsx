@@ -71,7 +71,7 @@ export function CheckoutPage() {
 
   if (!ready) {
     return (
-      <Container className="grid gap-6 pb-12 lg:grid-cols-[1fr_24rem]" aria-busy="true">
+      <Container className="grid grid-cols-1 gap-6 pb-12 lg:grid-cols-[minmax(0,1fr)_24rem]" aria-busy="true">
         <div className="flex flex-col gap-6">
           <Skeleton className="h-10 w-48" />
           <Skeleton className="h-72 w-full rounded-lg" />
@@ -281,7 +281,7 @@ function CheckoutForm() {
   return (
     <Container className="pb-12 sm:pb-16">
       <h1 className="text-h1 text-ink-900">Checkout</h1>
-      <div className="mt-6 grid items-start gap-6 lg:grid-cols-[1fr_24rem] lg:gap-10">
+      <div className="mt-6 grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1fr)_24rem] lg:gap-10">
         <OrderSummary
           quote={quote.data}
           pending={quote.isFetching}

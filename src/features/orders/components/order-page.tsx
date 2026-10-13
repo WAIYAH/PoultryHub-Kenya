@@ -44,7 +44,7 @@ export function OrderPage({ orderNumber, token }: { orderNumber: string; token: 
     return (
       <Container className="flex flex-col gap-6 py-8" aria-busy="true">
         <Skeleton className="h-10 w-64" />
-        <div className="grid gap-6 lg:grid-cols-[1fr_22rem]">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
           <Skeleton className="h-80 w-full rounded-lg" />
           <Skeleton className="h-64 w-full rounded-lg" />
         </div>
@@ -188,7 +188,7 @@ function OrderView({ order, orderRef }: { order: OrderDetail; orderRef: OrderRef
 
       <NextSteps order={order} />
 
-      <div className="grid items-start gap-6 lg:grid-cols-[1fr_22rem] lg:gap-8">
+      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-8">
         <div className="flex min-w-0 flex-col gap-6">
           {showMpesa && order.status !== "cancelled" ? (
             <MpesaPaymentPanel order={order} orderRef={orderRef} />

@@ -62,7 +62,7 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
 
 export function HydrateFallback() {
   return (
-    <Container className="grid gap-10 py-10 lg:grid-cols-2" aria-busy="true">
+    <Container className="grid grid-cols-1 gap-10 py-10 lg:grid-cols-2" aria-busy="true">
       <Skeleton className="aspect-square w-full rounded-xl" />
       <div className="flex flex-col gap-4">
         <Skeleton className="h-4 w-24" />
@@ -147,7 +147,7 @@ export default function ProductRoute({ loaderData }: Route.ComponentProps) {
         </Breadcrumb>
       </Container>
 
-      <Container className="grid gap-8 py-6 sm:py-8 lg:grid-cols-2 lg:gap-14">
+      <Container className="grid grid-cols-1 gap-8 py-6 sm:py-8 lg:grid-cols-2 lg:gap-14">
         <ProductGallery key={product.id} images={product.images} productName={product.name} />
         <ProductPurchase key={product.slug} product={product} zones={zones} />
       </Container>

@@ -94,7 +94,7 @@ export function ShopView({
   return (
     <>
       <PageHeader title={title} description={description} crumbs={crumbs} />
-      <Container className="grid gap-8 py-8 sm:py-10 lg:grid-cols-[15rem_1fr] lg:gap-10">
+      <Container className="grid grid-cols-1 gap-8 py-8 sm:py-10 lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-10">
         <aside aria-label="Filters" className="hidden lg:block">
           <div className="sticky top-24">
             <FilterPanel {...panelProps} />
