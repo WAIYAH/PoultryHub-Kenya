@@ -59,6 +59,7 @@ export function SiteHeader({
             {nav.map((link) => (
               <li key={link.href}>
                 <NavLink
+                  viewTransition
                   to={link.href}
                   end={link.href === "/"}
                   className={({ isActive }) =>
@@ -76,10 +77,11 @@ export function SiteHeader({
         </nav>
 
         <div className="flex items-center gap-0.5">
-          <Link to="/search" aria-label="Search" className={iconLink}>
+          <Link viewTransition to="/search" aria-label="Search" className={iconLink}>
             <Search aria-hidden="true" className="size-5" strokeWidth={1.75} />
           </Link>
           <Link
+            viewTransition
             to="/account"
             aria-label="My account"
             className={cn(iconLink, "hidden sm:inline-flex")}
@@ -88,7 +90,7 @@ export function SiteHeader({
           </Link>
           {actions}
           <Button asChild size="sm" className="ml-2 hidden lg:inline-flex">
-            <Link to={quote.href}>
+            <Link viewTransition to={quote.href}>
               {quote.label} <ArrowRight aria-hidden="true" />
             </Link>
           </Button>

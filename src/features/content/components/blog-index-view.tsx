@@ -7,6 +7,7 @@ import { EmptyState } from "@/components/shared/empty-state";
 import { ErrorState } from "@/components/shared/error-state";
 import { PageHeader } from "@/components/shared/page-header";
 import { PageLinks } from "@/components/shared/page-links";
+import { Reveal } from "@/components/shared/reveal";
 import { buttonVariants } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useHydrated } from "@/lib/hooks/use-hydrated";
@@ -50,6 +51,8 @@ export function BlogIndexView({
     ...contentQueries.posts(tag, page),
     ...(isDefault ? { initialData: initialPage, initialDataUpdatedAt: loadedAt } : {}),
     placeholderData: keepPreviousData,
+    // Wait for the URL's topic and page before refetching (see ShopView).
+    enabled: hydrated,
   });
   const data = posts.data;
   const pageCount = data ? Math.max(1, Math.ceil(data.total / data.pageSize)) : 1;
@@ -127,7 +130,9 @@ export function BlogIndexView({
           >
             {data.items.map((post, index) => (
               <li key={post.slug}>
-                <BlogCard post={post} priority={index < 2} />
+                <Reveal delay={Math.min(index, 8) * 40} className="h-full">
+                  <BlogCard post={post} priority={index < 2} />
+                </Reveal>
               </li>
             ))}
           </ul>

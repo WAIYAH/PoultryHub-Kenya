@@ -120,8 +120,75 @@ function Blocks({ nodes }: { nodes: MdBlock[] }): ReactNode {
         );
       case "hr":
         return <hr key={index} className="border-line" />;
+      case "table":
+        return <Table key={index} node={node} />;
     }
   });
+}
+
+const ALIGN = { left: "text-left", center: "text-center", right: "text-right" } as const;
+
+function plainText(nodes: MdInline[]): string {
+  return nodes
+    .map((node) =>
+      node.type === "text" || node.type === "code"
+        ? node.text
+        : node.type === "br"
+          ? " "
+          : plainText(node.children),
+    )
+    .join("");
+}
+
+/**
+ * A Markdown table, styled like the product specifications. Wide tables scroll sideways inside
+ * their own box (never the page, NFR-COMP-2); the box takes focus so keyboards can scroll it.
+ */
+function Table({ node }: { node: Extract<MdBlock, { type: "table" }> }) {
+  const align = (column: number) => {
+    const value = node.align[column];
+    return value ? ALIGN[value] : "text-left";
+  };
+  return (
+    <div
+      role="region"
+      aria-label={`Table: ${node.header.map(plainText).join(", ")}`}
+      // A scrolling region must be keyboard reachable (WCAG 2.1.1, axe scrollable-region-focusable).
+      // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+      tabIndex={0}
+      className="overflow-x-auto rounded-lg bg-white shadow-card focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+    >
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b border-line">
+            {node.header.map((cell, column) => (
+              <th
+                key={column}
+                scope="col"
+                className={cn(
+                  "px-4 py-3 font-semibold whitespace-nowrap text-ink-900",
+                  align(column),
+                )}
+              >
+                <Inline nodes={cell} />
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-line">
+          {node.rows.map((row, rowIndex) => (
+            <tr key={rowIndex}>
+              {row.map((cell, column) => (
+                <td key={column} className={cn("px-4 py-3 text-ink-700", align(column))}>
+                  <Inline nodes={cell} />
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 }
 
 /**

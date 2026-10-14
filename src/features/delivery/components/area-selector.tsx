@@ -53,8 +53,10 @@ export function AreaSelector({
   );
 
   return (
-    <div className={cn("flex flex-col gap-3", className)}>
-      <div className="grid gap-3 sm:grid-cols-2">
+    // Side by side only when the selector itself has room: the cart summary column is narrow even
+    // on desktop, where "Choose a county" would be cut off.
+    <div className={cn("@container flex flex-col gap-3", className)}>
+      <div className="grid gap-3 @sm:grid-cols-2">
         <div className="flex flex-col gap-1.5">
           <label htmlFor={countyId} className="text-sm font-medium text-ink-900">
             County

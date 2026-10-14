@@ -43,8 +43,9 @@ export const meta: Route.MetaFunction = ({ loaderData, location }) => {
   }
   const { post } = loaderData;
   const path = `/blog/${post.slug}`;
-  const image = post.coverImage
-    ? { url: post.coverImage.jpegSrc ?? post.coverImage.src, alt: post.coverImage.alt }
+  // Link previews need a JPEG (WhatsApp handles WebP poorly); otherwise the site image is used.
+  const image = post.coverImage?.jpegSrc
+    ? { url: post.coverImage.jpegSrc, alt: post.coverImage.alt }
     : undefined;
   return pageMeta({
     title: post.title,

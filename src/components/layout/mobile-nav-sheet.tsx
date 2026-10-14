@@ -57,6 +57,7 @@ export default function MobileNavSheet({
             {nav.map((link) => (
               <li key={link.href}>
                 <NavLink
+                  viewTransition
                   to={link.href}
                   end={link.href === "/"}
                   onClick={close}
@@ -73,6 +74,7 @@ export default function MobileNavSheet({
             ))}
             <li>
               <NavLink
+                viewTransition
                 to="/account"
                 onClick={close}
                 className="flex min-h-12 items-center gap-2 rounded-md px-3 text-base font-semibold text-ink-900 hover:bg-forest-50"
@@ -84,7 +86,7 @@ export default function MobileNavSheet({
         </nav>
         <div className="flex flex-col gap-3 border-t border-line p-5">
           <Button asChild>
-            <Link to={quote.href} onClick={close}>
+            <Link viewTransition to={quote.href} onClick={close}>
               {quote.label} <ArrowRight aria-hidden="true" />
             </Link>
           </Button>

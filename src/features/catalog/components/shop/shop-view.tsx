@@ -55,7 +55,7 @@ export function ShopView({
   initialPage: Page<ProductSummary>;
   loadedAt: number;
 }) {
-  const { state, update } = useShopState();
+  const { state, update, hydrated } = useShopState();
   const whatsappHref = useWhatsappHref();
   const [sheetOpen, setSheetOpen] = useState(false);
   const [sheetRequested, setSheetRequested] = useState(false);
@@ -68,6 +68,9 @@ export function ShopView({
     // Build-time data seeds only the matching (unfiltered) query; prices still revalidate.
     ...(isDefault ? { initialData: initialPage, initialDataUpdatedAt: loadedAt } : {}),
     placeholderData: keepPreviousData,
+    // Before hydration the URL's filters aren't read yet, so don't refetch the unfiltered view
+    // for a visitor who asked for a filtered one.
+    enabled: hydrated,
   });
   const page = products.data;
   const pageCount = page ? Math.max(1, Math.ceil(page.total / page.pageSize)) : 1;

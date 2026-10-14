@@ -35,6 +35,7 @@ export function BlogCard({
         ) : null}
         <Heading className="text-lg leading-snug font-bold text-ink-900">
           <Link
+            viewTransition
             to={`/blog/${post.slug}`}
             prefetch="intent"
             className="outline-none after:absolute after:inset-0 after:content-['']"

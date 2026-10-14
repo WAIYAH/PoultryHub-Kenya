@@ -29,11 +29,12 @@ export async function loader({ request }: Route.LoaderArgs) {
   return { policy: rest, blocks: markdownToBlocks(bodyMarkdown) };
 }
 
+// The canonical URL comes from the slug, never the address bar: hosts may add a trailing slash.
 export const meta: Route.MetaFunction = ({ loaderData, location }) =>
   pageMeta({
     title: loaderData?.policy.title ?? "Policy",
     description: loaderData?.policy.summary ?? "PoultryHub Kenya policies.",
-    path: location.pathname,
+    path: loaderData ? `/policies/${loaderData.policy.slug}` : location.pathname,
   });
 
 export default function PolicyRoute({ loaderData }: Route.ComponentProps) {

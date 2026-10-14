@@ -70,12 +70,16 @@
 - [x] **P2-11** About, Services (offered only), Contact (phone, WhatsApp, email, map link and hours; a validated form with mock submit, prefilled by `?subject=`, `?product=` and `?order=` links), FAQ grouped by topic with jump links, Blog index (tag filters and pages in the URL) and article pages (cover, reading time, tags, WhatsApp share, related articles, BlogPosting JSON-LD), Search across products (Swahili names), articles and FAQs, and the four policy pages showing their review status. Markdown is converted at build time (`marked` → JSON tree → `Prose`, no raw HTML); the parser loads in the browser only for articles published after the build
 - [x] **P2-12** Announcement bar (in the pre-rendered HTML, so no layout shift), floating WhatsApp button (not in checkout or admin; lifts above sticky bars), footer with hours, payment methods and real social links only. Site settings load in the root loader. Without a configured number, demo builds use WhatsApp's share link and real builds hide WhatsApp
 - [x] **P2-13** Loading, empty, error, success and offline states on every data view: offline banner; home, shop, category, product, cart, checkout, order, track order, auth, account, blog and search. Static content pages have nothing to load in the browser. Forced-state E2E (J14) is part of P2-16
-- [ ] **P2-14** Motion and micro-interactions per [DESIGN_SYSTEM §12](DESIGN_SYSTEM.md#12-motion-system)
-- [ ] **P2-15** SEO: meta per route, canonical URLs, OG images, JSON-LD (known fields only), sitemap, robots, `noindex` rules
+- [x] **P2-14** Motion and micro-interactions per [DESIGN_SYSTEM §12](DESIGN_SYSTEM.md#12-motion-system): 150 ms page cross-fades (View Transitions; the header stays put), scroll reveals on About, Services and blog cards, slow hero shapes on desktop. All of it is off with reduced motion
+- [x] **P2-15** SEO: meta per route, canonical URLs, OG images, JSON-LD (known fields only), sitemap, robots, `noindex` rules. `e2e/seo.spec.ts` checks every sitemap page (unique title, description and canonical; JPEG or PNG link preview; one h1; valid JSON-LD) and that private routes are `noindex`
 
 **Verification**
-- [ ] **P2-16** Unit and component tests (TESTING §6.1–6.2). E2E: J1, J4 and J5 (mock), J7, J13, J14, plus the link crawl. Done so far: J1, J4, J5, J6 (demo email links in place of Mailpit) and J7, plus the checkout recovery screens
-- [ ] **P2-17** Lighthouse, axe and responsive screenshots (360–1440 px); fix what they find
+- [x] **P2-16** Unit and component tests (TESTING §6.1–6.2), including product cards and the shop filters. E2E on 360 px and desktop: J1, J4, J5, J6 (demo email links in place of Mailpit), J7, J13 (menu focus trap), J14 (forced states) and the link crawl, plus the checkout recovery screens
+- [ ] **P2-17** Lighthouse, axe and responsive screenshots (360–1440 px); fix what they find. Done so far:
+  - **axe:** no serious violations on the pages tested.
+  - **Lighthouse (mobile):** Accessibility and Best Practices 100, CLS ≤ 0.005. SEO 69 fails only `is-crawlable`, because staging's robots.txt blocks crawlers by design.
+  - **Screenshots:** taken at all six widths. Fixed what they showed: the quote button overflowing its card at 360 px, Markdown tables being dropped, the cart's county and area selects being cut off, and egg and broiler FAQs showing on every product page.
+  - **Still open:** Performance is 81–84 against the 85 target. The hero image paints about 900 ms after it loads, and the local preview server uses HTTP/1.1 rather than a production host's HTTP/2.
 - [ ] **P2-18** Phase 2 summary and demo walkthrough → 🔒 **your approval**
 
 ## Phase 3: Supabase backend & authentication

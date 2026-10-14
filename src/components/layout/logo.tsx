@@ -30,7 +30,11 @@ export function Logo({
   className?: string;
 }) {
   return (
-    <Link to="/" className={cn("inline-flex items-center gap-2.5 rounded-full", className)}>
+    <Link
+      viewTransition
+      to="/"
+      className={cn("inline-flex items-center gap-2.5 rounded-full", className)}
+    >
       <LogoMark />
       <span className="flex flex-col leading-none">
         <span

@@ -44,7 +44,9 @@ export function PageHeader({
                   <BreadcrumbItem>
                     {crumb.href ? (
                       <BreadcrumbLink asChild>
-                        <Link to={crumb.href}>{crumb.label}</Link>
+                        <Link viewTransition to={crumb.href}>
+                          {crumb.label}
+                        </Link>
                       </BreadcrumbLink>
                     ) : (
                       <BreadcrumbPage>{crumb.label}</BreadcrumbPage>

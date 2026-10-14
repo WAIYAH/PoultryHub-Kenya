@@ -61,6 +61,25 @@ describe("markdownToBlocks", () => {
     expect(markdownToBlocks("<div>block html</div>")).toEqual([]);
   });
 
+  it("keeps tables, with column alignment and inline formatting in cells", () => {
+    const markdown =
+      "| Stage | Price |\n|:---|---:|\n| **Chicks** | KSh 150 |\n| Layers | KSh 850 |";
+    expect(markdownToBlocks(markdown)).toEqual([
+      {
+        type: "table",
+        align: ["left", "right"],
+        header: [[{ type: "text", text: "Stage" }], [{ type: "text", text: "Price" }]],
+        rows: [
+          [
+            [{ type: "strong", children: [{ type: "text", text: "Chicks" }] }],
+            [{ type: "text", text: "KSh 150" }],
+          ],
+          [[{ type: "text", text: "Layers" }], [{ type: "text", text: "KSh 850" }]],
+        ],
+      },
+    ]);
+  });
+
   it("turns unsafe links into plain text", () => {
     expect(markdownToBlocks("[click](javascript:alert(1)) [ok](https://example.com)")).toEqual([
       {

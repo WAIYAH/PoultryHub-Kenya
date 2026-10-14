@@ -47,7 +47,9 @@ async function loadProduct(slug: string) {
     queryClient.ensureQueryData(catalogQueries.related(product.id)),
     delivery.listZones(),
     delivery.listPickupLocations(),
-    content.listFaqs({ topic: "products" }),
+    // Ordering questions apply to every product. FAQs have no link to categories (DATABASE.md
+    // §4), so "products" ones (eggs, broilers) would show on unrelated pages.
+    content.listFaqs({ topic: "ordering" }),
   ]);
   return { product, related, zones, pickups, faqs, loadedAt: Date.now() };
 }
@@ -101,8 +103,9 @@ export const meta: Route.MetaFunction = ({ loaderData, location }) => {
     description: product.shortDescription,
     path,
     type: "product",
-    image: product.image
-      ? { url: product.image.jpegSrc ?? product.image.src, alt: product.image.alt }
+    // Link previews need a JPEG (WhatsApp handles WebP poorly); otherwise the site image is used.
+    image: product.image?.jpegSrc
+      ? { url: product.image.jpegSrc, alt: product.image.alt }
       : undefined,
     jsonLd: [productJsonLd(product), breadcrumbJsonLd(crumbsFor(product), path)],
   });

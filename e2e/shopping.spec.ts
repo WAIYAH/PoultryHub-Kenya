@@ -118,6 +118,19 @@ test.describe("shopping", () => {
     await expect(page.getByTestId("result-count")).toHaveText(/^\d+ products$/);
   });
 
+  test("every card's button fits inside its card", async ({ page }) => {
+    // Two columns on a 360px phone leave each button about 126px (P2-17 found the quote button
+    // spilling out). Screen-reader text is excluded: it is clipped to 1px by design.
+    await page.goto("/shop");
+    await waitForHydration(page);
+    const overflowing = await page.$$eval("[data-testid=product-card] .mt-auto > *", (buttons) =>
+      buttons
+        .filter((button) => button.scrollWidth > button.clientWidth)
+        .map((button) => button.textContent?.trim() ?? ""),
+    );
+    expect(overflowing).toEqual([]);
+  });
+
   test("the shop listing has no serious accessibility violations", async ({ page }) => {
     await page.goto("/shop/eggs");
     await waitForHydration(page);

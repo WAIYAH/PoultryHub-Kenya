@@ -15,11 +15,9 @@ export const meta: Route.MetaFunction = ({ loaderData }) =>
     title: "About us",
     description: loaderData?.about.intro.lead ?? "Our story, how we farm and what we stand for.",
     path: "/about",
-    image: loaderData?.about.intro.image
-      ? {
-          url: loaderData.about.intro.image.jpegSrc ?? loaderData.about.intro.image.src,
-          alt: loaderData.about.intro.image.alt,
-        }
+    // Link previews need a JPEG (WhatsApp handles WebP poorly); otherwise the site image is used.
+    image: loaderData?.about.intro.image?.jpegSrc
+      ? { url: loaderData.about.intro.image.jpegSrc, alt: loaderData.about.intro.image.alt }
       : undefined,
   });
 

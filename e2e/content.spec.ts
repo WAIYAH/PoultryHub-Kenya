@@ -118,6 +118,16 @@ test.describe("content pages", () => {
     await expect(page).toHaveURL(/\/shop\/day-old-chicks$/);
   });
 
+  test("article tables keep their rows and fit narrow phones", async ({ page }) => {
+    await page.goto("/blog/feeding-layers");
+    const table = page.getByRole("region", { name: "Table: Stage, Typical age, Feed" });
+    await expect(table.getByRole("columnheader")).toHaveText(["Stage", "Typical age", "Feed"]);
+    await expect(table.getByRole("row")).toHaveCount(4);
+    await expect(table.getByRole("cell", { name: "Growers mash" })).toBeVisible();
+    await expectNoHorizontalScroll(page);
+    await expectNoSeriousA11yViolations(page);
+  });
+
   test("an unknown article shows a helpful not-found page", async ({ page }) => {
     await page.goto("/blog/no-such-article");
     await expect(page.getByRole("heading", { level: 1, name: "Article not found" })).toBeVisible();

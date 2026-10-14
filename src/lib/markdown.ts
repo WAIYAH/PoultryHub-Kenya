@@ -21,7 +21,11 @@ export type MdBlock =
   | { type: "list"; ordered: boolean; start: number; items: MdBlock[][] }
   | { type: "blockquote"; children: MdBlock[] }
   | { type: "code"; text: string }
-  | { type: "hr" };
+  | { type: "hr" }
+  /** GFM table: header cells, then rows of cells; `align` has one entry per column. */
+  | { type: "table"; align: MdAlign[]; header: MdInline[][]; rows: MdInline[][][] };
+
+export type MdAlign = "left" | "center" | "right" | null;
 
 /** Same-site paths and anchors, web links, email and phone links. Anything else becomes text. */
 export function safeHref(href: string): string | null {
@@ -116,8 +120,18 @@ function blocks(tokens: Token[]): MdBlock[] {
       case "hr":
         result.push({ type: "hr" });
         break;
+      case "table": {
+        const table = token as Tokens.Table;
+        result.push({
+          type: "table",
+          align: table.align,
+          header: table.header.map((cell) => inline(cell.tokens)),
+          rows: table.rows.map((row) => row.map((cell) => inline(cell.tokens))),
+        });
+        break;
+      }
       default:
-        // "space", "html", tables and anything unexpected are left out.
+        // "space", "html" and anything unexpected are left out.
         break;
     }
   }

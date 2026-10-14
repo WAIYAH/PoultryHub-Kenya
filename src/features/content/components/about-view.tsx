@@ -5,6 +5,7 @@ import { IconCircle } from "@/components/shared/content-icon";
 import { Container } from "@/components/shared/container";
 import { Eyebrow } from "@/components/shared/eyebrow";
 import { ResponsiveImage, imageProps } from "@/components/shared/responsive-image";
+import { Reveal } from "@/components/shared/reveal";
 import { Section } from "@/components/shared/section";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { buttonVariants } from "@/components/ui/button";
@@ -61,14 +62,15 @@ export function AboutView({ about }: { about: AboutContent }) {
         <Container className="flex flex-col gap-10">
           <SectionHeading title={about.practices.title} lead={about.practices.lead} />
           <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {about.practices.points.map((point) => (
-              <li
-                key={point.title}
-                className="flex flex-col gap-3 rounded-lg bg-white p-5 shadow-card"
-              >
-                <IconCircle name={point.icon} />
-                <h3 className="font-bold text-ink-900">{point.title}</h3>
-                {point.text ? <p className="text-sm text-ink-700">{point.text}</p> : null}
+            {about.practices.points.map((point, index) => (
+              <li key={point.title}>
+                <Reveal delay={Math.min(index, 8) * 40} className="h-full">
+                  <div className="flex h-full flex-col gap-3 rounded-lg bg-white p-5 shadow-card">
+                    <IconCircle name={point.icon} />
+                    <h3 className="font-bold text-ink-900">{point.title}</h3>
+                    {point.text ? <p className="text-sm text-ink-700">{point.text}</p> : null}
+                  </div>
+                </Reveal>
               </li>
             ))}
           </ul>

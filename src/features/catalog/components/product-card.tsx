@@ -32,7 +32,7 @@ function availabilityText(product: ProductSummary, showCounts: boolean): string 
     case "out_of_stock":
       return "Out of stock: check back soon";
     case "enquiry":
-      return "Price on request";
+      return "Indicative price"; // quoted per order, as on the product page
   }
 }
 
@@ -95,6 +95,7 @@ export function ProductCard({
         {compact ? null : <p className="text-eyebrow text-forest-800">{product.category.name}</p>}
         <Heading className="line-clamp-2 text-base leading-snug font-semibold text-ink-900">
           <Link
+            viewTransition
             to={href}
             prefetch="intent"
             className="outline-none after:absolute after:inset-0 after:content-['']"
@@ -125,11 +126,14 @@ export function ProductCard({
           <p className="text-sm text-ink-600">Min. {formatQuantity(dv.minOrderQty, dv.unit)}</p>
         ) : null}
 
-        <div className="relative z-10 mt-auto pt-2">
+        {/* A container, so the quote icon can drop out on cards too narrow for it (two columns on a
+            360px phone). */}
+        <div className="@container relative z-10 mt-auto pt-2">
           {product.purchaseMode === "enquiry" ? (
             <Button asChild variant="outline" size="sm" className="w-full">
-              <Link to={href} tabIndex={-1} aria-hidden="true">
-                <MessageCircleQuestion aria-hidden="true" /> Request a quote
+              <Link viewTransition to={href} tabIndex={-1} aria-hidden="true">
+                <MessageCircleQuestion aria-hidden="true" className="@max-[8.5rem]:hidden" /> Get a
+                quote
               </Link>
             </Button>
           ) : addQuantity === null ? (
@@ -141,7 +145,6 @@ export function ProductCard({
               size="sm"
               className="w-full"
               data-testid="card-add-to-cart"
-              aria-label={`Add ${formatQuantity(addQuantity, dv.unit)} of ${product.name} to cart`}
               onClick={() =>
                 addToCart({
                   product,
@@ -156,6 +159,10 @@ export function ProductCard({
                 : addQuantity > 1
                   ? `Add ${addQuantity}`
                   : "Add to cart"}
+              {/* The accessible name starts with the visible words (WCAG 2.5.3, Label in Name). */}
+              <span className="sr-only">
+                {`: ${formatQuantity(addQuantity, dv.unit)} of ${product.name}`}
+              </span>
             </Button>
           )}
         </div>
