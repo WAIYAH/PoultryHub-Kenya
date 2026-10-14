@@ -10,25 +10,6 @@ export interface PageInfo {
 }
 
 export const pageRegistry = {
-  search: { title: "Search", summary: "Results across products, articles and FAQs.", phase: 2 },
-  about: { title: "About us", summary: "Our story, farming methods and standards.", phase: 2 },
-  services: { title: "Services", summary: "Supply, bulk orders and farming guidance.", phase: 2 },
-  contact: { title: "Contact us", summary: "Phone, WhatsApp, email and a contact form.", phase: 2 },
-  faq: { title: "FAQs", summary: "Answers about ordering, delivery and payments.", phase: 2 },
-  blog: { title: "Blog", summary: "Poultry farming tips and product guides.", phase: 2 },
-  "blog-post": { title: "Article", summary: "A blog article.", phase: 2 },
-  "policy-privacy": { title: "Privacy policy", summary: "How we handle personal data.", phase: 2 },
-  "policy-terms": { title: "Terms and conditions", summary: "Terms of sale.", phase: 2 },
-  "policy-delivery": {
-    title: "Delivery and returns",
-    summary: "Delivery areas, pick-up and returns.",
-    phase: 2,
-  },
-  "policy-payments": {
-    title: "Payment information",
-    summary: "M-Pesa and other payment options.",
-    phase: 2,
-  },
   "admin-overview": {
     title: "Overview",
     summary: "Sales, orders and stock at a glance.",

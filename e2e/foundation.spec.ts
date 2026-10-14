@@ -76,7 +76,7 @@ test.describe("foundation", () => {
       .getByRole("navigation", { name: "Main" })
       .getByRole("link", { name: "About" })
       .click();
-    const heading = page.getByRole("heading", { level: 1, name: "About us" });
+    const heading = page.getByRole("heading", { level: 1, name: "About PoultryHub Kenya" });
     await expect(heading).toBeFocused();
     await expect(page.getByTestId("route-announcer")).toHaveText(/About us/);
   });

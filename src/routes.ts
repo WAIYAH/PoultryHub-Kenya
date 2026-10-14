@@ -6,6 +6,8 @@ import { type RouteConfig, index, layout, prefix, route } from "@react-router/de
 
 const PLACEHOLDER = "routes/system/placeholder.tsx";
 const page = (path: string, id: string) => route(path, PLACEHOLDER, { id });
+// One module serves all four policy pages; it reads the slug from the URL.
+const POLICY = "routes/public/policy.tsx";
 
 // Development and staging builds only; never shipped to production (ARCHITECTURE.md §6.1).
 const includeDesignSystem = process.env.VITE_APP_ENV !== "production";
@@ -16,21 +18,21 @@ export default [
     route("shop", "routes/public/shop.tsx"),
     route("shop/:categorySlug", "routes/public/category.tsx"),
     route("products/:productSlug", "routes/public/product.tsx"),
-    page("search", "search"),
+    route("search", "routes/public/search.tsx"),
     route("cart", "routes/public/cart.tsx"),
     route("orders/:orderNumber", "routes/public/order.tsx"),
     route("track-order", "routes/public/track-order.tsx"),
-    page("about", "about"),
-    page("services", "services"),
-    page("contact", "contact"),
-    page("faq", "faq"),
-    page("blog", "blog"),
-    page("blog/:postSlug", "blog-post"),
+    route("about", "routes/public/about.tsx"),
+    route("services", "routes/public/services.tsx"),
+    route("contact", "routes/public/contact.tsx"),
+    route("faq", "routes/public/faq.tsx"),
+    route("blog", "routes/public/blog.tsx"),
+    route("blog/:postSlug", "routes/public/blog-post.tsx"),
     ...prefix("policies", [
-      page("privacy", "policy-privacy"),
-      page("terms", "policy-terms"),
-      page("delivery-and-returns", "policy-delivery"),
-      page("payments", "policy-payments"),
+      route("privacy", POLICY, { id: "policy-privacy" }),
+      route("terms", POLICY, { id: "policy-terms" }),
+      route("delivery-and-returns", POLICY, { id: "policy-delivery" }),
+      route("payments", POLICY, { id: "policy-payments" }),
     ]),
     ...prefix("auth", [
       route("sign-in", "routes/auth/sign-in.tsx"),
