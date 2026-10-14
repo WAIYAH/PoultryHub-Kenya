@@ -75,11 +75,11 @@
 
 **Verification**
 - [x] **P2-16** Unit and component tests (TESTING §6.1–6.2), including product cards and the shop filters. E2E on 360 px and desktop: J1, J4, J5, J6 (demo email links in place of Mailpit), J7, J13 (menu focus trap), J14 (forced states) and the link crawl, plus the checkout recovery screens
-- [ ] **P2-17** Lighthouse, axe and responsive screenshots (360–1440 px); fix what they find. Done so far:
+- [x] **P2-17** Lighthouse, axe and responsive screenshots (360–1440 px); fix what they find.
   - **axe:** no serious violations on the pages tested.
   - **Lighthouse (mobile):** Accessibility and Best Practices 100, CLS ≤ 0.005. SEO 69 fails only `is-crawlable`, because staging's robots.txt blocks crawlers by design.
   - **Screenshots:** taken at all six widths. Fixed what they showed: the quote button overflowing its card at 360 px, Markdown tables being dropped, the cart's county and area selects being cut off, and egg and broiler FAQs showing on every product page.
-  - **Still open:** Performance is 81–84 against the 85 target. The hero image paints about 900 ms after it loads, and the local preview server uses HTTP/1.1 rather than a production host's HTTP/2.
+  - **Performance:** the stylesheet was the last tag in `<head>`, after ~30 modulepreload links, so over HTTP/1.1 first paint waited behind the scripts. It now comes first (`precedence` in `root.tsx`). Medians of three runs: over the local HTTP/1.1 preview, Home 84, Shop 83, Product 86 (was 82, 83, 85). Over HTTP/2, as the production host serves it, Home 87, Shop 92, Product 96, with LCP 2.3–2.6 s on Shop and Product and 2.5–3.2 s on Home. The rest of the HTTP/1.1 gap is Lighthouse's simulation counting all ~165 KB of modulepreloaded JS before first paint. Lowering their priority cut simulated FCP but made LCP and blocking time worse, so it was dropped. Scores on this laptop swing by up to ±6 with its CPU speed. The "hero paints 900 ms late" lead is not about the hero. In headless Chrome on this laptop, the first frame reaches the screen 0.4–1.4 s after load, even with JavaScript blocked or animations off, and the delay swings with GPU flags and machine load. A plain HTML page shows a smaller delay (~120 ms). Not reproduced in Playwright (~150 ms); recheck on the staging host.
 - [ ] **P2-18** Phase 2 summary and demo walkthrough → 🔒 **your approval**
 
 ## Phase 3: Supabase backend & authentication
