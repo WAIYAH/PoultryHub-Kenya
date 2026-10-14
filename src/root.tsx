@@ -22,7 +22,7 @@ import { ConfigError } from "./lib/env";
 import { useHydrated } from "./lib/hooks/use-hydrated";
 import { getQueryClient } from "./lib/query-client";
 import { getServices } from "./services";
-import "./styles/app.css";
+import appStyles from "./styles/app.css?url";
 
 /**
  * Site settings (contact details, hours, payment options, announcement) for every page. Runs at
@@ -62,6 +62,10 @@ export function Layout({ children }: { children: ReactNode }) {
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#064e3b" />
+        {/* `precedence` makes React emit the stylesheet at the top of <head>, ahead of the
+            modulepreload links it hoists there. A plain <Links /> stylesheet would come after them
+            and wait for a connection behind ~30 scripts over HTTP/1.1, delaying first paint. */}
+        <link rel="stylesheet" href={appStyles} precedence="default" />
         <Meta />
         <Links />
       </head>

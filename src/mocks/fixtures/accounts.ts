@@ -2,6 +2,7 @@
 // tracking pages have something to show. The demo password is public on purpose: the mock data
 // source is refused in production builds (src/lib/env.ts), and Phase 3 test users get passwords
 // from local environment variables instead.
+import { DEMO_ACCOUNT } from "@/config/demo";
 import type {
   Address,
   FulfilmentMethod,
@@ -60,7 +61,7 @@ export interface FixtureOrder {
   needsReview: boolean;
 }
 
-export const DEMO_ACCOUNT = { email: "demo@poultryhub.example", password: "demo1234" } as const;
+export { DEMO_ACCOUNT };
 
 export const users: FixtureUser[] = [
   {

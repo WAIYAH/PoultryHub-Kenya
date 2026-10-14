@@ -65,6 +65,8 @@
   --animate-rise-in: rise-in 560ms var(--ease-out-soft) both;
   /* Cart badge bump when the count changes (§12; a CSS approximation of the spring). */
   --animate-bump: bump 420ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* Decorative hero shapes: a very slow drift, desktop only (§12). */
+  --animate-drift: drift 14s ease-in-out infinite;
 
   @keyframes bump {
     0% {
@@ -75,6 +77,16 @@
     }
     100% {
       transform: scale(1);
+    }
+  }
+
+  @keyframes drift {
+    0%,
+    100% {
+      transform: translate(0, 0) rotate(0deg);
+    }
+    50% {
+      transform: translate(6px, -10px) rotate(4deg);
     }
   }
 
@@ -254,6 +266,28 @@
   .reveal[data-reveal] {
     opacity: 1 !important;
     transform: none !important;
+  }
+}
+
+/* Page transitions (§12): links cross-fade over 150 ms where the View Transitions API exists. The
+   sticky header is its own layer, so it stays put instead of fading with the page. */
+.header-glass {
+  view-transition-name: site-header;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 150ms;
+    animation-timing-function: var(--ease-standard);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
   }
 }
 

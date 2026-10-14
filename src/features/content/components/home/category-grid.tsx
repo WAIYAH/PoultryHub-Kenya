@@ -14,6 +14,7 @@ export function CategoryGrid({ categories }: { categories: Category[] }) {
         <li key={category.id}>
           <Reveal delay={index * 60} className="h-full">
             <Link
+              viewTransition
               to={`/shop/${category.slug}`}
               className="group flex h-full flex-col overflow-hidden rounded-lg bg-white shadow-card transition-shadow hover:shadow-raised"
             >

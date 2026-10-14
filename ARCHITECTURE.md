@@ -84,7 +84,7 @@ Versions were checked against the npm registry on **2026-10-13**. They will be p
 | Backend SDK | `@supabase/supabase-js` | 2.117.x | Official client |
 | Backend tooling | `supabase` (CLI, dev dependency) | 2.120.x | Local stack (Docker), migrations, type generation, function serving, pgTAP |
 | Toasts | `sonner` | 2.0.x | shadcn's toast component |
-| Markdown | `react-markdown` | 10.1.x | Blog, policies and FAQs. **No raw HTML** (safe by default) |
+| Markdown | `marked` | 18.0.x | Blog posts and policies. Parsed in the pre-render loaders into a JSON tree that `Prose` renders as plain React elements, so no parser ships to public pages (`react-markdown` would add ~35 KB, NFR-PERF-3). The browser loads it only for posts published after the build. **No raw HTML** (dropped) |
 | Admin only | `@tanstack/react-table`, `recharts` | 9.3.x / 3.10.x | Data tables and charts. Lazy-loaded, never in public bundles |
 | Fonts | `@fontsource-variable/plus-jakarta-sans` | 5.3.x | Self-hosted variable font. No third-party font request |
 | Unit / component tests | `vitest`, `@testing-library/react`, `@testing-library/user-event`, `@testing-library/jest-dom`, `jsdom` | 5.0.x / 16.3.x / 14.6.x / 7.0.x / 30.x | Fast tests that share Vite's transform pipeline |

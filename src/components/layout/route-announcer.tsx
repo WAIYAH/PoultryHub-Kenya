@@ -8,13 +8,13 @@ import { useLocation } from "react-router";
 export function RouteAnnouncer() {
   const { pathname } = useLocation();
   const [announcement, setAnnouncement] = useState("");
-  const isInitialLoad = useRef(true);
+  // Compared by path, not a one-shot flag: Strict Mode runs effects twice in development, which
+  // made the first page load look like a navigation and moved focus to its heading.
+  const announcedPath = useRef(pathname);
 
   useEffect(() => {
-    if (isInitialLoad.current) {
-      isInitialLoad.current = false;
-      return;
-    }
+    if (announcedPath.current === pathname) return;
+    announcedPath.current = pathname;
     // Let the new route render and update document.title first.
     const timer = window.setTimeout(() => {
       setAnnouncement(document.title);

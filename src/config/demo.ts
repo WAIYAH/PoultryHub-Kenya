@@ -2,3 +2,6 @@
 // demo banner, the "Demo: no payment is processed" labels and the TEST payment controls
 // (TESTING.md AC-12). Production builds refuse mock data (src/lib/env.ts), so this is false there.
 export const IS_DEMO = import.meta.env.VITE_DATA_SOURCE !== "supabase";
+
+/** SAMPLE DATA: the demo customer's sign-in (src/mocks/fixtures/accounts.ts), shown in demo builds. */
+export const DEMO_ACCOUNT = { email: "demo@poultryhub.example", password: "demo1234" } as const;

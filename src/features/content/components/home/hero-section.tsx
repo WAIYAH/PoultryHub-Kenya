@@ -25,6 +25,7 @@ export function HeroSection({
         data-surface="dark"
         className="relative mx-auto grid max-w-[1200px] overflow-hidden rounded-xl bg-forest-900 bg-[radial-gradient(circle_at_85%_10%,rgb(250_204_21/0.10),transparent_40%),radial-gradient(circle_at_0%_100%,rgb(4_120_87/0.45),transparent_55%)] text-white lg:grid-cols-[1.05fr_0.95fr]"
       >
+        <HeroDecor />
         <div className="relative z-10 flex flex-col gap-6 px-6 pt-10 pb-8 sm:px-10 sm:pt-14 lg:py-20 lg:pr-4 lg:pl-14">
           <ul
             className="flex animate-rise-in flex-wrap gap-2 text-eyebrow"
@@ -87,5 +88,39 @@ export function HeroSection({
         ) : null}
       </div>
     </section>
+  );
+}
+
+/**
+ * Faint egg and leaf outlines in the panel's left corners, clear of the text, drifting very
+ * slowly on desktop only (DESIGN_SYSTEM.md §12). Still for anyone who prefers reduced motion.
+ */
+function HeroDecor() {
+  const shape =
+    "pointer-events-none absolute hidden text-white/10 motion-safe:animate-drift lg:block";
+  return (
+    <>
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={0.75}
+        className={`${shape} -top-6 -left-6 size-24`}
+      >
+        <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+        <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+      </svg>
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={0.75}
+        className={`${shape} -bottom-8 -left-8 size-28 [animation-delay:-7s]`}
+      >
+        <path d="M12 2C8 2 4 8 4 14a8 8 0 0 0 16 0c0-6-4-12-8-12" />
+      </svg>
+    </>
   );
 }

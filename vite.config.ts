@@ -20,6 +20,15 @@ const COMMON_CHUNK =
   /[\\/](src[\\/](domain|lib|config|components[\\/](layout|shared|ui))|node_modules[\\/].*(lucide-react|@tanstack))[\\/]/;
 const COMMON_MIN_ROUTES = 6;
 
+// The share count includes the client-only sign-in, account and checkout pages, so code that only
+// forms use (fields, mutations, idempotency keys) would otherwise reach the common chunk and every
+// public page with it. It stays out and is split as usual. (A group of its own doesn't work: a
+// group takes its modules' dependencies too, and React with them.)
+const FORMS_ONLY =
+  /[\\/](src[\\/](components[\\/](shared[\\/]form-field|ui[\\/](input|textarea))|lib[\\/]ids|domain[\\/]email)\.tsx?$|node_modules[\\/].*@tanstack[\\/](query-core[\\/].*[\\/]mutationObserver|react-query[\\/].*[\\/]useMutation)\.js$)/;
+
+const inCommonChunk = (id: string) => COMMON_CHUNK.test(id) && !FORMS_ONLY.test(id);
+
 export default defineConfig(({ mode }) => {
   // Expose VITE_* values from .env files to Node-side config (routes.ts, react-router.config.ts),
   // which otherwise only see the shell environment. Shell values take precedence.
@@ -37,7 +46,7 @@ export default defineConfig(({ mode }) => {
         },
         output: {
           codeSplitting: {
-            groups: [{ name: "common", test: COMMON_CHUNK, minShareCount: COMMON_MIN_ROUTES }],
+            groups: [{ name: "common", test: inCommonChunk, minShareCount: COMMON_MIN_ROUTES }],
           },
         },
       },

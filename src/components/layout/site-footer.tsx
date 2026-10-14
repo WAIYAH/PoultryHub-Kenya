@@ -121,6 +121,7 @@ export function SiteFooter({
               {column.links.map((link) => (
                 <li key={link.href}>
                   <Link
+                    viewTransition
                     to={link.href}
                     className="inline-flex min-h-8 items-center hover:text-white"
                   >

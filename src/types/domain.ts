@@ -472,6 +472,8 @@ export interface OrderRef {
 }
 
 export interface OrderItem {
+  /** For "Order again" (CART-08); null once the variant no longer exists. */
+  variantId: string | null;
   productSlug: string | null;
   productName: string;
   variantName: string;
